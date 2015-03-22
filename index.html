@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Elo Hell DB</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/reset.css">
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <script src="js/lib/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript">
+            var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            var dataBase = null;
+            var lastElement;
+            function startDB(){
+                dataBase = indexedDB.open('ehdbtesto', 1);
+                dataBase.onupgradeneeded = function(e){
+                    var active = dataBase.result;
+                    var object = active.createObjectStore('players', {keyPath: 'id', autoIncrement: true});
+                    object.createIndex('by_nick', 'nick', {unique: false});
+                };
+                dataBase.onsuccess = function(e){
+                    document.getElementById('text_area').innerHTML = 'Base de datos cargada correctamente';
+                    loadAll();
+                };
+                dataBase.onerror = function(e){
+                    document.getElementById('text_area').innerHTML = 'Error al cargar la base de datos';
+                };
+            }
+            function agregarUsuario(){
+                /**/
+                if(document.querySelector('#player_nick_1').value.length < 3){
+                    return document.getElementById('text_area').innerHTML = 'El nick del usuario debe tener 3 o mas caracteres';
+                }
+                if(document.querySelector('#player_nick_1').value.length > 16){
+                    return document.getElementById('text_area').innerHTML = 'El nick del usuario debe tener como maximo 16 caracteres';
+                }
+                /**/
+                var active = dataBase.result;
+                var data = active.transaction(['players'], 'readwrite');
+                var object = data.objectStore('players');
+                var request = object.put({
+                    nick: document.querySelector('#player_nick_1').value,
+                    reason: document.querySelector('#select_agregar').value,
+                    fecha: obtenerFechaActual()
+                });
+                request.onerror = function(e){
+                    alert(request.error.name + '\n\n' + request.error.message);
+                };
+                data.oncomplete = function(e){
+                    document.querySelector('#player_nick_1').value = '';
+                    document.querySelector('#select_agregar').value = 'Sin especificar';
+                    document.getElementById('text_area').innerHTML = 'Usuario agregado correctamente a la base de datos';
+                    loadAll();
+                };
+            }
+            function buscarEliminarUsuario(){
+                if(document.querySelector('#select_buscar').value === 'buscar'){
+                    var active = dataBase.result;
+                    var data = active.transaction(['players'], 'readonly');
+                    var object = data.objectStore('players');
+                    var elements = [];
+                    object.openCursor().onsuccess = function(e){
+                        var result = e.target.result;
+                        if(result === null){
+                            return;
+                        }
+                        elements.push(result.value);
+                        result.continue();
+                    };
+                    data.oncomplete = function(){
+                        for(var key in elements){
+                            if(document.querySelector('#player_nick_2').value === elements[key].nick){
+                                document.getElementById('text_area').innerHTML = 'Usuario encontrado en la base de datos';
+                                location.href = '#b' + elements[key].id;
+                                /**/
+                                if(lastElement != undefined){
+                                    $(lastElement.children()).css({"color": "rgb(200,200,200)"});
+                                }
+                                var elt = document.getElementsByTagName('td');
+                                for(var eln in elt){
+                                    if(parseInt(elt[eln].innerHTML) === elements[key].id){
+                                        var par = $(elt[eln]).parent();
+                                        lastElement = par;
+                                        $(par.children()).css({"color": "rgb(225,0,0)"});
+                                        elt[eln].scrollIntoView();
+                                    }
+                                }
+                                /**/
+                                return;
+                            }
+                            else {
+                                document.getElementById('text_area').innerHTML = 'No se ha encontrado el usuario en la base de datos';
+                            }
+                        }
+                    }
+                }
+            }
+            function loadAll(){
+                var active = dataBase.result;
+                var data = active.transaction(['players'], 'readonly');
+                var object = data.objectStore('players');
+                var elements = [];
+                object.openCursor().onsuccess = function(e){
+                    var result = e.target.result;
+                    if(result === null){
+                        return;
+                    }
+                    elements.push(result.value);
+                    result.continue();
+                };
+                data.oncomplete = function(){
+                    var outerHTML = '';
+                    for(var key in elements){
+                        outerHTML += '\n\<tr>\n\<td style="width: 5% !important;" href="#b' + elements[key].id + '">' + elements[key].id + '</td>\n\<td style="width: 25% !important;">' + elements[key].nick + '</td>\n\<td style="width: 50% !important;">' + elements[key].reason + '</td>\n\<td style="width: 20% !important;">' + elements[key].fecha + '</td>\n\</tr>';
+                    }
+                    elements = [];
+                    document.querySelector('#elementsList').innerHTML = outerHTML;
+                };
+            }
+            function cargarTodosPorNick(){
+                var active = dataBase.result;
+                var data = active.transaction(['players'], 'readonly');
+                var object = data.objectStore('players');
+                var index = object.index('by_nick');
+                var elements = [];
+                index.openCursor().onsuccess = function(e){
+                    var result = e.target.result;
+                    if(result === null){
+                        return;
+                    }
+                    elements.push(result.value);
+                    result.continue();
+                };
+                data.oncomplete = function(){
+                    var outerHTML = '';
+                    for(var key in elements){
+                        outerHTML += '\n\<tr>\n\<td style="width: 5% !important;" href="#b' + elements[key].id + '">' + elements[key].id + '</td>\n\<td style="width: 25% !important;">' + elements[key].nick + '</td>\n\<td style="width: 50% !important;">' + elements[key].reason + '</td>\n\<td style="width: 20% !important;">' + elements[key].fecha + '</td>\n\</tr>';
+                    }
+                    elements = [];
+                    document.querySelector('#elementsList').innerHTML = outerHTML;
+                };
+            }
+            /* TEST */
+            var testvar = 1, myVar;
+            function TEST(){
+                if(testvar < 100){
+                    myVar = setTimeout(function(){ TEST() }, 250);
+                }
+                var random = parseInt((Math.random() * 6) + 1);
+                switch(random){
+                    case 1: document.querySelector('#select_agregar').value = 'Sin especificar'; break;
+                    case 2: document.querySelector('#select_agregar').value = 'Abandono/Inactividad'; break;
+                    case 3: document.querySelector('#select_agregar').value = 'Negarse a mantener comunicacion con el equipo'; break;
+                    case 4: document.querySelector('#select_agregar').value = 'Jugador sin habilidad'; break;
+                    case 5: document.querySelector('#select_agregar').value = 'Lenguaje ofensivo'; break;
+                    case 6: document.querySelector('#select_agregar').value = 'Ayudar al equipo enemigo'; break;
+                }
+                document.getElementById('player_nick_1').value = 'Usuario de prueba' + ' ' + testvar.toString();
+                var active = dataBase.result;
+                var data = active.transaction(['players'], 'readwrite');
+                var object = data.objectStore('players');
+                var request = object.put({
+                    nick: document.querySelector('#player_nick_1').value,
+                    reason: document.querySelector('#select_agregar').value,
+                    fecha: obtenerFechaActual()
+                });
+                request.onerror = function(e){
+                    alert(request.error.name + '\n\n' + request.error.message);
+                };
+                data.oncomplete = function(e){
+                    document.querySelector('#player_nick_1').value = '';
+                    document.querySelector('#select_agregar').value = '';
+                    document.getElementById('text_area').innerHTML = 'Usuario de prueba numero' + ' ' + testvar + ' ' + 'agregado correctamente a la base de datos';
+                    testvar = testvar + 1;
+                    /**/
+                    document.getElementById('options_table').scrollIntoView();
+                    /**/
+                    loadAll();
+                };
+            }
+            /**/
+        </script>
+    </head>
+    <body onload='startDB();'>
+        <a href='#' onclick='TEST();' style='text-decoration: none; margin: 10px 0 0 10px; position: fixed; color: white; top: 0; left: 0;'>Agregar usuarios de prueba</a>
+        <div id='contenedor'>
+            <div id='ehdb_list'>
+                <table>
+                    <caption>Usuarios en la base de datos del ELO HELL</caption>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nick</th>
+                            <th>Razón</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id='elementsList'>
+                        <tr>
+                            <td>Null</td>
+                            <td>Null</td>
+                            <td>Null</td>
+                            <td>Null</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style='display: none;'><a href='#' onclick='cargarTodosPorNick();'><div class='enviar_button'>Ordenar por nick</div></a></div>
+        </div>
+        <div id='menu_container'>
+            <div id='menu'>
+                <div id='ehdb_agregar'>
+                    <table id='options_table'>
+                        <caption>Agregar un usuario a la base de datos</caption>
+                        <thead>
+                            <tr>
+                                <th>Nick del usuario</th>
+                                <th>Razón</th>
+                                <th>Agregar a la base de datos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class='options_td' style='width: 25% !important;'>
+                                    <input id='player_nick_1' class='player_nick' type='text' placeholder=' '>
+                                </td>
+                                <td class='options_td' style='width: 50% !important;'>
+                                    <select id='select_agregar'>
+                                        <option value='Sin especificar'>Sin especificar</option>
+                                        <option value='Abandono/Inactividad'>Abandono/Inactividad</option>
+                                        <option value='Negarse a mantener comunicacion con el equipo'>Negarse a mantener comunicacion con el equipo</option>
+                                        <option value='Jugador sin habilidad'>Jugador sin habilidad</option>
+                                        <option value='Lenguaje ofensivo'>Lenguaje ofensivo</option>
+                                        <option value='Ayudar al equipo enemigo'>Ayudar al equipo enemigo</option>
+                                    </select>
+                                </td>
+                                <td class='options_td' style='width: 25% !important; background-color: rgb(125,0,0);'>
+                                    <a href='#' onclick='agregarUsuario();'><div class='enviar_button'>Agregar usuario</div></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class='height_10px'></div>
+                <div id='ehdb_buscar'>
+                    <table id='options_table'>
+                        <caption>Buscar/Eliminar un usuario en la base de datos</caption>
+                        <thead>
+                            <tr>
+                                <th>Nick del usuario</th>
+                                <th>Acción</th>
+                                <th>Buscar/Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class='options_td' style='width: 25% !important;'>
+                                    <input id='player_nick_2' class='player_nick' type='text' placeholder=' '>
+                                </td>
+                                <td class='options_td' style='width: 50% !important;'>
+                                    <select id='select_buscar'>
+                                        <option value='buscar'>Buscar este usuario</option>
+                                        <option value='eliminar'>Eliminar este usuario</option>
+                                    </select>
+                                </td>
+                                <td class='options_td' style='width: 25% !important; background-color: rgb(125,0,0);'>
+                                    <a href='#' onclick='buscarEliminarUsuario();'><div class='enviar_button'>Buscar/Eliminar usuario</div></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id='text_area'>
+            </div>
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>

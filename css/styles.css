@@ -1,0 +1,130 @@
+* {
+    font-family: monospace !important;
+}
+body{
+    text-align: center;
+    background-color: black;
+    background-image: url('/img/background-image.png');
+    background-repeat: repeat;
+    padding-top: 10px;
+}
+a{
+    text-decoration: none !important;
+}
+table {
+    border-collapse: collapse;
+    width: 800px;
+}
+caption {
+    height: 25px;
+    line-height: 25px;
+    background-color: rgb(100,0,0);
+    font-size: 12.5px;
+    border-left: 1px solid rgb(200,200,200);
+    border-right: 1px solid rgb(200,200,200);
+    border-top: 1px solid rgb(200,200,200);
+    color: rgb(200,200,200);
+}
+th, td {
+    height: 25px;
+    line-height: 25px;
+    text-align: left;
+    padding-left: 10px;
+    font-size: 12.5px;
+    border: 1px solid rgb(200,200,200);
+}
+th {
+    font-weight: normal;
+    background-color: rgb(50,50,50);
+    color: rgb(200,200,200);
+}
+td {
+    background-color: rgb(25,25,25);
+    color: rgb(200,200,200);
+}
+#contenedor {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(75,75,75);
+    width: 800px;
+    padding: 10px;
+    border: 1px solid rgb(200,200,200);
+    margin-bottom: 227px;
+}
+#contenedor a{
+    width: auto;
+}
+.height_5px {
+    height: 10px;
+    width: 0px;
+}
+.height_10px {
+    height: 10px;
+    width: 0px;
+}
+#menu_container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+#menu {
+    width: 800px;
+    background-color: rgb(75,75,75);
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgb(200,200,200);
+    padding: 10px;
+}
+#options_table {
+    width: 800px !important;
+}
+.options_td {
+    padding: 0px !important;
+}
+.player_nick {
+    height: 23px;
+    line-height: 23px;
+    width: 190px !important;
+    display: block !important;
+    border: none;
+    background-color: rgb(25,25,25);
+    color: rgb(200,200,200);
+    padding-left: 10px;
+    font-size: 12.5px;
+}
+#select_agregar, #select_buscar {
+    height: 25px;
+    line-height: 25px;
+    border: 0px !important;
+    width: 100%;
+    background-color: rgb(25,25,25);
+    color: rgb(200,200,200);
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    padding-left: 10px;
+    font-size: 12.5px;
+}
+.enviar_button {
+    width: 190px !important;
+    line-height: 25px;
+    height: 25px;
+    padding-left: 10px;
+    color: rgb(200,200,200);
+    font-size: 12.5px;
+}
+#text_area {
+    border-left: 1px solid rgb(200,200,200);
+    border-right: 1px solid rgb(200,200,200);
+    height: 25px;
+    line-height: 25px;
+    width: 820px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: black;
+    text-align: center;
+    font-size: 12.5px;
+    color: rgb(225,0,0) !important;
+}
