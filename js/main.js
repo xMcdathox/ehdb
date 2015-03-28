@@ -10,18 +10,18 @@ var udpVar = 1, myVar;
 /* Cargar la base de datos */
 
 function startDB(){
-    dataBase = indexedDB.open('newehdbtest4', 1);
+    dataBase = indexedDB.open('newehdbtest5', 1);
     dataBase.onupgradeneeded = function(e){
         var active = dataBase.result;
         var object = active.createObjectStore('players', {keyPath: 'id', autoIncrement: true});
         object.createIndex('by_nick', 'nick', {unique: false});
     };
     dataBase.onsuccess = function(e){
-        document.getElementById('text_area').innerHTML = 'Base de datos cargada correctamente';
+        log(true, '', 'La base de datos ha sido cargada correctamente');
         loadAll();
     };
     dataBase.onerror = function(e){
-        document.getElementById('text_area').innerHTML = 'Error al cargar la base de datos';
+        log(true, '', 'Ha ocurrido un error al cargar la base de datos');
     };
 }
 
@@ -29,10 +29,10 @@ function startDB(){
 
 function ingresarUsuario(){
     if(document.querySelector('#lb_content_agregar_input').value.length < 3){
-        return document.getElementById('text_area').innerHTML = 'El nick del usuario debe tener 3 o mas caracteres';
+        log(true, '', 'El apodo del usuario debe tener 3 o más caracteres');
     }
     if(document.querySelector('#lb_content_agregar_input').value.length > 16){
-        return document.getElementById('text_area').innerHTML = 'El nick del usuario debe tener como maximo 16 caracteres';
+        log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres');
     }
     var active = dataBase.result;
     var data = active.transaction(['players'], 'readwrite');
@@ -40,15 +40,15 @@ function ingresarUsuario(){
     var request = object.put({
         nick: document.querySelector('#lb_content_agregar_input').value,
         reason: LMO.reason,
-        fecha: obtenerFechaActual()
+        fecha: obtenerFechaActual('fechayhora')
     });
     request.onerror = function(e){
         alert(request.error.name + '\n\n' + request.error.message);
     };
     data.oncomplete = function(e){
+        log(true, '', 'El usuario' + ' ' + "'" + document.querySelector('#lb_content_agregar_input').value + "'" + ' ' + 'ha sido agregado correctamente a la base de datos');
         document.querySelector('#lb_content_agregar_input').value = '';
         LMO.reason = LMO.defaultReason;
-        document.getElementById('text_area').innerHTML = 'Usuario agregado correctamente a la base de datos';
         document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro usuario a la base de datos';
         loadAll();
     };
@@ -71,7 +71,7 @@ function buscarUsuario(){
     data.oncomplete = function(){
         for(var key in elements){
             if(document.querySelector('#lb_content_buscar_input').value === elements[key].nick){
-                document.getElementById('text_area').innerHTML = 'Usuario encontrado en la base de datos';
+                log(true, '', 'Se ha encontrado el usuario en la base de datos');
                 location.href = '#b' + elements[key].id;
                 quitarLB();
                 if(lastElement != undefined){
@@ -89,7 +89,7 @@ function buscarUsuario(){
             return;
             }
             else {
-                document.getElementById('text_area').innerHTML = 'No se ha encontrado el usuario en la base de datos';
+                log(true, '', 'No se ha encontrado el usuario en la base de datos');
             }
         }
     }
@@ -168,7 +168,7 @@ function usuariosDePrueba(){
     var request = object.put({
         nick: 'Usuario de prueba',/*document.querySelector('#player_nick_1').value,*/
         reason: 'Esta es una razón de prueba',/*document.querySelector('#select_agregar').value*/
-        fecha: obtenerFechaActual()
+        fecha: obtenerFechaActual('fechayhora')
     });
     request.onerror = function(e){
         alert(request.error.name + '\n\n' + request.error.message);
@@ -189,7 +189,7 @@ function usuariosDePrueba(){
 
 /* Obtener fecha */
 
-function obtenerFechaActual(){
+function obtenerFechaActual(tipo){
     var d = new Date();
     var day = d.getDate();
     var month = d.getMonth()+1;
@@ -222,7 +222,16 @@ function obtenerFechaActual(){
     else {
         secondt = second;
     }
-    var fecha = dayt + '-' + montht + '-' + year + ',' + ' ' + hour + ':' + minutet + ':' + secondt;
+    var fecha;
+    if(tipo === 'fechayhora'){
+        fecha = dayt + '-' + montht + '-' + year + ',' + ' ' + hour + ':' + minutet + ':' + secondt;
+    }
+    else if(tipo === 'fecha'){
+        fecha = dayt + '-' + montht + '-' + year;
+    }
+    else if(tipo === 'hora'){
+        fecha = hour + ':' + minutet + ':' + secondt;
+    }
     return fecha;
 }
 
@@ -269,12 +278,10 @@ var LMO = {
         'Reason 08'
     ],
     aplicarOpciones: function(){
-        var children = $('.lb_razon_option').children();
-        for(var i = 0; i< children.length; i++){
-            console.log(i);
+        var target = $('.lb_razon_option');
+        for(var i = 0; i< target.length; i++){
             var it = i + 1;
-            console.log(it);
-            children[i].innerHTML = this.reasons[i] + '<div id="lb_razon_a_0' + it.toString() + '_status" class="lb_razon_option_status"></div>';
+            target[i].innerHTML = this.reasons[i] + '<div id="lb_razon_a_0' + it.toString() + '_status" class="lb_razon_option_status"></div>';
         }
     },
     defaultReason: 'Sin especificar',
@@ -282,8 +289,6 @@ var LMO = {
     reasonElementSelectedId: '',
     reasonSelect: function(reason){
         var targetId = '#lb_razon_a_0' + reason.toString() + '_status';
-        var targetIdinnerHTML ='#ingresar_reason_0' + reason.toString();
-        console.log(targetIdinnerHTML);
         var children = $('.lb_razon_option').children();
         for(var i = 0; i < children.length; i++){
             if('#' + children[i].id != targetId){
@@ -291,15 +296,25 @@ var LMO = {
             }
         }
         $(targetId).css({'background-color': 'red'});
-        this.reason = $(targetIdinnerHTML).innerHTML;
+        this.reason = this.reasons[reason-1];
         this.reasonElementSelectedId = targetId.substring(1,targetId.length);
-        console.log(this.reasonElementSelectedId);
+    },
+    restablecerValores: function(){ // Restablecer los valores al cerrar el LB
+        this.reason = this.defaultReason;
+        this.reasonElementSelectedId = '';
     }
 };
 
 /* ML_01 */
 
 $('#ml_01').click(function(){
+    LOG.cargarBaseDeDatos();
+    return;
+});
+
+/* ML_02 */
+
+$('#ml_02').click(function(){
     LMO.lb_open(01);
     $('#lb_container').css({'margin-top': -$('#lb_container').height() / 2});
     $('#lb_container').css({'margin-left': -$('#lb_container').width() / 2});
@@ -308,9 +323,9 @@ $('#ml_01').click(function(){
     return;
 });
 
-/* ML_02 */
+/* ML_03 */
 
-$('#ml_02').click(function(){
+$('#ml_03').click(function(){
     LMO.lb_open(02);
     $('#lb_container').css({'margin-top': -$('#lb_container').height() / 2});
     $('#lb_container').css({'margin-left': -$('#lb_container').width() / 2});
@@ -321,11 +336,13 @@ $('#ml_02').click(function(){
 /* Quitar LB */
 
 $('#lb_background').click(function(){
+    LMO.restablecerValores();
     fadeLb('out');
     return;
 });
 
 function quitarLB(){
+    LMO.restablecerValores();
     fadeLb('out');
     return;
 }
@@ -462,4 +479,87 @@ $(document).ready(function(){
             $(telements[7]).css('background-color', moutc);
         }
     });
+    /* Consola */
+    LOG.cargarBaseDeDatos();
 });
+
+/*** Log ***/
+
+/* Objeto principal para esta funcion */
+
+var LOG = {
+    cargarBaseDeDatos: function(){
+        startDB();
+    },
+    log_activo: false,
+    log_cin: '01',
+    log_cout: '02',
+    log_cambiarContenido: function(){
+        var temp = this.log_cin;
+        this.log_cin = this.log_cout;
+        this.log_cout = temp;
+        this.log_fade(this.log_cin, this.log_cout);
+    },
+    log_fade: function(cin, cout){
+        var fadeInTarget = '#log_item_' + cin;
+        var fadeOutTarget = '#log_item_' + cout;
+        $(fadeOutTarget).fadeOut();
+        $(fadeOutTarget).fadeOut("slow");
+        $(fadeOutTarget).fadeOut(250);
+        setTimeout(function(){
+            $(fadeInTarget).fadeIn();
+            $(fadeInTarget).fadeIn("slow");
+            $(fadeInTarget).fadeIn(250);
+        }, 250);
+    },
+    log_textoRegistrado: 'No hay registro de eventos',
+    log_horaRegistrada: 'Null',
+    log_cambiarTexto: function(t,h, hr){
+        this.log_textoRegistrado = t;
+        if(hr === false){
+            this.log_horaRegistrada = h;
+        }
+        document.getElementById('log_item_02').innerHTML = '[' + h + ']:' + ' ' + t;
+    },
+    log_mostrarLog: function(){
+        log(true, 'horaregistrada', this.log_textoRegistrado);
+    }
+};
+
+/* Timeout */
+
+var logTVar;
+
+function log(action, hora, text){
+    var hrs = false;
+    if(hora === 'horaregistrada'){
+        hrs = true;
+        if(LOG.log_horaRegistrada != 'Null'){
+            hora = LOG.log_horaRegistrada;
+        }
+        else {
+            hora = obtenerFechaActual('hora');
+            LOG.log_horaRegistrada = hora;
+        }
+    }
+    else {
+        hora = obtenerFechaActual('hora');
+    }
+    if(action === true){
+        if(LOG.log_activo === true){
+            clearTimeout(logTVar);
+            logTVar = setTimeout(function(){ log(false,text) }, 5000);
+        }
+        else {
+            LOG.log_activo = true;
+            LOG.log_cambiarContenido();
+            logTVar = setTimeout(function(){ log(false, text) }, 5000);
+        }
+        LOG.log_cambiarTexto(text, hora, hrs);
+    }
+    else {
+        clearTimeout(logTVar);
+        LOG.log_activo = false;
+        LOG.log_cambiarContenido();
+    }
+}

@@ -10,7 +10,7 @@ html{
 body {
     min-height: 100%;
     background-color: #121314;
-    min-width: 1282px !important;
+    min-width: 1280px; /* Width minimo */
 }
 
 a {
@@ -23,8 +23,9 @@ a {
     height: 30px;
     border-bottom: 1px solid #121314;
     background-color: #222326;
-    z-index: 100;
+    z-index: 103;
     text-align: center;
+    min-width: 1280px; /* Width minimo */
 }
 
 #main_header_title {
@@ -166,6 +167,10 @@ th {
     position: fixed;
 }
 
+#lb_background:hover {
+    cursor: pointer;
+}
+
 #lb_container {
     border: 1px solid #121314;
     display: none;
@@ -262,4 +267,61 @@ th {
     background-color: #adafb2;
     float: right;
     margin-top: 6px;
+}
+
+/* Log */
+
+#log_container {
+    width: 100%;
+    z-index: 103;
+    position: fixed;
+    bottom: 0;
+    height: 30px;
+    background-color: #222326;
+    min-width: 1280px;
+    text-align: center;
+    border-top: 1px solid #121314;
+}
+
+#log_item_01 {
+    display: inline-block;
+}
+
+#log_item_02 {
+    display: none;
+}
+
+#log_text {
+    width: auto;
+    height: 30px;
+    line-height: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    text-shadow: 1px 1px black;
+    color: #adafb2;
+}
+
+#log_text:hover {
+    color: white;
+}
+
+#log_text:active {
+    color: red;
+}
+
+.log_log {
+    margin: 0 auto;
+    text-align: center;
+    min-width: 300px;
+    max-width: 500px;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 5px;
+    padding-left: 10px;
+    background-color: #121314;
+    color: #adafb2;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    text-shadow: 1px 1px black;
+    border-radius: 2.5px;
 }

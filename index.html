@@ -8,15 +8,15 @@
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <script src="js/lib/jquery-1.11.2.min.js"></script>
     </head>
-    <body onload='startDB();'>
+    <body>
         <header id='main_header'>
             <span id='main_header_title'>ELO HELL DATABASE</span>
         </header>
         <nav id='main_nav'>
             <div class='main_nav_section'>BASE DE DATOS</div>
-            <a href='#'><div class='main_nav_link'>Volver a cargar la base de datos</div></a>
-            <a id='ml_01' href='#'><div class='main_nav_link'>Agregar un usuario a la base de datos</div></a>
-            <a id='ml_02' href='#'><div class='main_nav_link'>Buscar un usuario en la base de datos</div></a>
+            <a id='ml_01' href='#'><div class='main_nav_link'>Volver a cargar la base de datos</div></a>
+            <a id='ml_02' href='#'><div class='main_nav_link'>Agregar un usuario a la base de datos</div></a>
+            <a id='ml_03' href='#'><div class='main_nav_link'>Buscar un usuario en la base de datos</div></a>
             <a href='#'><div class='main_nav_link main_nav_link_bloqueado'>Ver más información sobre este usuario</div></a>
             <a href='#'><div class='main_nav_link main_nav_link_bloqueado'>Eliminar de la base de datos</div></a>
         </nav>
@@ -50,55 +50,31 @@
                 <div id='lb_content_agregar' class='lb_content_class'>
                     <div class='lb_text'>Apodo</div>
                     <input id='lb_content_agregar_input' class='lb_input' type='text' placeholder=''>
-                    <div class='lb_text'>Razón</div>
+                    <div class='lb_text'>Razón de ingreso</div>
                     <div id='lb_content_agregar_razon' class='lb_razon'>
                         <a id='lb_razon_a_01' href='#' onclick='LMO.reasonSelect(1);'>
-                            <div class='lb_razon_option'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_01_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option'></div>
                         </a>
                         <a id='lb_razon_a_02' href='#' onclick='LMO.reasonSelect(2);'>
-                            <div class='lb_razon_option lb_razon_option_black'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_02_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
                         <a id='lb_razon_a_03' href='#' onclick='LMO.reasonSelect(3);'>
-                            <div class='lb_razon_option'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_03_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option'></div>
                         </a>
                         <a id='lb_razon_a_04' href='#' onclick='LMO.reasonSelect(4);'>
-                            <div class='lb_razon_option lb_razon_option_black'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_04_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
                         <a id='lb_razon_a_05' href='#' onclick='LMO.reasonSelect(5);'>
-                            <div class='lb_razon_option'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_05_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option'></div>
                         </a>
                         <a id='lb_razon_a_06' href='#' onclick='LMO.reasonSelect(6);'>
-                            <div class='lb_razon_option lb_razon_option_black'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_06_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
                         <a id='lb_razon_a_07' href='#' onclick='LMO.reasonSelect(7);'>
-                            <div  class='lb_razon_option'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_07_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div  class='lb_razon_option'></div>
                         </a>
                         <a id='lb_razon_a_08' href='#' onclick='LMO.reasonSelect(8);'>
-                            <div class='lb_razon_option lb_razon_option_black'>
-                                <div class='reason_value'>Null</div>
-                                <div id='lb_razon_a_08_status' class='lb_razon_option_status'></div>
-                            </div>
+                            <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
                     </div>
                     <a href='#' onclick='ingresarUsuario();'><div id='lb_content_agregar_button' class='lb_button'>Ingresar usuario a la base de datos</div></a>
@@ -112,6 +88,12 @@
                 <!---->
             </div>
         </div>
+        <!-- Log -->
+        <div id='log_container'>
+            <a id='log_item_01' href='#' onclick='LOG.log_mostrarLog();'><div id='log_text'>Registro de eventos</div></a>
+            <div id='log_item_02' class='log_log'></div>
+        </div>
+        <!---->
         <script src="js/main.js"></script>
         <div id='text_area' style='display: none'></div>
     </body>
