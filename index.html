@@ -7,6 +7,7 @@
         <link rel="stylesheet" type="text/css" href="css/reset.css">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <script src="js/lib/jquery-1.11.2.min.js"></script>
+        <script src="js/lib/jquery.animate-colors-min.js"></script>
     </head>
     <body>
         <header id='main_header'>
@@ -14,15 +15,15 @@
         </header>
         <nav id='main_nav'>
             <div class='main_nav_section'>BASE DE DATOS</div>
-            <a id='ml_01' href='#'><div class='main_nav_link'>Volver a cargar la base de datos</div></a>
-            <a id='ml_02' href='#'><div class='main_nav_link'>Agregar un usuario a la base de datos</div></a>
-            <a id='ml_03' href='#'><div class='main_nav_link'>Buscar un usuario en la base de datos</div></a>
+            <a id='ml_01' href='#' onclick="return false;"><div class='main_nav_link'>Volver a cargar la base de datos</div></a>
+            <a id='ml_02' href='#' onclick="return false;"><div class='main_nav_link'>Agregar un usuario a la base de datos</div></a>
+            <a id='ml_03' href='#' onclick="return false;"><div class='main_nav_link'>Buscar un usuario en la base de datos</div></a>
             <a href='#'><div class='main_nav_link main_nav_link_bloqueado'>Ver más información sobre este usuario</div></a>
             <a href='#'><div class='main_nav_link main_nav_link_bloqueado'>Eliminar de la base de datos</div></a>
         </nav>
         <div id='contenedor'>
             <table>
-                <caption>Usuarios en la base de datos</caption>
+                <caption>Usuarios registrados en la base de datos</caption>
                 <thead>
                     <tr>
                         <th style='width: 7.5% !important;'>#</th>
@@ -32,7 +33,7 @@
                     </tr>
                 </thead>
                 <tbody id='elementsList'>
-                    <tr>
+                    <tr id=''>
                         <td style='width: 7.5% !important;'>Null</td>
                         <td style='width: 22.5% !important;'>Null</td>
                         <td style='width: 50%; !important'>Null</td>
@@ -52,49 +53,48 @@
                     <input id='lb_content_agregar_input' class='lb_input' type='text' placeholder=''>
                     <div class='lb_text'>Razón de ingreso</div>
                     <div id='lb_content_agregar_razon' class='lb_razon'>
-                        <a id='lb_razon_a_01' href='#' onclick='LMO.reasonSelect(1);'>
+                        <a id='lb_razon_a_01' href='#' onclick='return false;'>
                             <div class='lb_razon_option'></div>
                         </a>
-                        <a id='lb_razon_a_02' href='#' onclick='LMO.reasonSelect(2);'>
+                        <a id='lb_razon_a_02' href='#' onclick='return false;'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
-                        <a id='lb_razon_a_03' href='#' onclick='LMO.reasonSelect(3);'>
+                        <a id='lb_razon_a_03' href='#' onclick='return false;'>
                             <div class='lb_razon_option'></div>
                         </a>
-                        <a id='lb_razon_a_04' href='#' onclick='LMO.reasonSelect(4);'>
+                        <a id='lb_razon_a_04' href='#' onclick='return false;'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
-                        <a id='lb_razon_a_05' href='#' onclick='LMO.reasonSelect(5);'>
+                        <a id='lb_razon_a_05' href='#' onclick='return false;'>
                             <div class='lb_razon_option'></div>
                         </a>
-                        <a id='lb_razon_a_06' href='#' onclick='LMO.reasonSelect(6);'>
+                        <a id='lb_razon_a_06' href='#' onclick='return false;'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
-                        <a id='lb_razon_a_07' href='#' onclick='LMO.reasonSelect(7);'>
+                        <a id='lb_razon_a_07' href='#' onclick='return false;'>
                             <div  class='lb_razon_option'></div>
                         </a>
-                        <a id='lb_razon_a_08' href='#' onclick='LMO.reasonSelect(8);'>
+                        <a id='lb_razon_a_08' href='#' onclick='return false;'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
                         </a>
                     </div>
-                    <a href='#' onclick='ingresarUsuario();'><div id='lb_content_agregar_button' class='lb_button'>Ingresar usuario a la base de datos</div></a>
+                    <a id='href_ingresarusuario' href='#' onclick='return false;'><div id='lb_content_agregar_button' class='lb_button'>Ingresar usuario a la base de datos</div></a>
                 </div>
                 <!-- Buscar -->
                 <div id='lb_content_buscar' class='lb_content_class'>
                     <div class='lb_text'>Apodo</div>
                     <input id='lb_content_buscar_input' class='lb_input' type='text' placeholder=''>
-                    <a href='#' onclick='buscarUsuario();'><div id='lb_content_buscar_button' class='lb_button'>Buscar usuario en la base de datos</div></a>
+                    <a id='href_buscarusuario' href='#' onclick='return false;'><div id='lb_content_buscar_button' class='lb_button'>Buscar usuario en la base de datos</div></a>
                 </div>
                 <!---->
             </div>
         </div>
         <!-- Log -->
         <div id='log_container'>
-            <a id='log_item_01' href='#' onclick='LOG.log_mostrarLog();'><div id='log_text'>Registro de eventos</div></a>
+            <a id='log_item_01' href='#' onclick='return false;'><div id='log_text'>Registro de eventos</div></a>
             <div id='log_item_02' class='log_log'></div>
         </div>
         <!---->
         <script src="js/main.js"></script>
-        <div id='text_area' style='display: none'></div>
     </body>
 </html>
