@@ -1,28 +1,28 @@
+/*** Variables globales ***/
+
+var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB,
+    dataBase = null,
+    lastElement,
+    udpVar = 1, myVar,
+    mainColor = '#FF7D00';
+
 /*** indexedDB ***/
-
-/* Variables globales */
-
-var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-var dataBase = null;
-var lastElement;
-var udpVar = 1, myVar;
-var mainColor = '#FF7D00';
 
 /* Cargar la base de datos */
 
 function startDB(){
-    dataBase = indexedDB.open('newehdbtest8', 1);
+    dataBase = indexedDB.open('newehdbtest28', 1);
     dataBase.onupgradeneeded = function(e){
         var active = dataBase.result;
         var object = active.createObjectStore('players', {keyPath: 'id', autoIncrement: true});
         object.createIndex('by_nick', 'nick', {unique: true}); //ehdb_b0.2
     };
     dataBase.onsuccess = function(e){
-        log(true, '', 'La base de datos ha sido cargada correctamente');
-        loadAll();
+        log(true, '', 'La base de datos ha sido cargada correctamente', false);
+        loadAll(false);
     };
     dataBase.onerror = function(e){
-        log(true, '', 'Ha ocurrido un error al cargar la base de datos');
+        log(true, '', 'Ha ocurrido un error al cargar la base de datos', true);
     };
 }
 
@@ -30,31 +30,28 @@ function startDB(){
 
 function ingresarUsuario(){
     if(document.querySelector('#lb_content_agregar_input').value.length < 3){
-        return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres');
+        return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres', true);
     }
     if(document.querySelector('#lb_content_agregar_input').value.length > 16){
-        return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres');
+        return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres', true);
     }
     /* Verificar que el usuario no este en la base de datos */
     var children = $('tr').children();
-    var pMS;
     for(var i = 0; i < children.length; i++){
         if(children[i].innerHTML === document.querySelector('#lb_content_agregar_input').value){
             var par = $(children[i]).parent();
             console.log(par.attr('id'));
             if(par.attr('id') === user.userSelectedId){ // Solo hacer el scroll
                 $('html, body').animate({scrollTop: $('#' + user.userSelectedId).offset().top -30}, 1000);
-                console.log('el usuario ya estaba seleccionado');
             }
             else { // Hacer los cambios con una ID alternativa en caso de no ser el usuario previamente seleccionado
-                children[i].setAttribute('id','UID');
-                $('#UID').animate({color: mainColor}, 750);
-                $('#UID').animate({color: "#adafb2"}, 750);
-                $('html, body').animate({scrollTop: $("#UID").offset().top -30}, 1000);
-                $('#UID').removeAttr('id');
-                console.log('el usuario no estaba seleccionado');
+                var parentId = '#' + par.attr('id');
+                var parentCh = $(parentId).children();
+                $(parentCh).animate({color: mainColor}, 750);
+                $(parentCh).animate({color: '#adafb2'}, 750);
+                $('html, body').animate({scrollTop: $(parentId).offset().top -30}, 1000);
             }
-            return log(true, '', 'El usuario ya se encuentra en la base de datos');
+            return log(true, '', 'El usuario ya se encuentra en la base de datos', true);
         }
     }
     /**/
@@ -70,21 +67,21 @@ function ingresarUsuario(){
         console.log(request.error.name + '\n\n' + request.error.message);
     };
     data.oncomplete = function(e){
-        log(true, '', 'El usuario' + ' ' + "'" + document.querySelector('#lb_content_agregar_input').value + "'" + ' ' + 'ha sido agregado correctamente a la base de datos');
+        log(true, '', 'El usuario' + ' ' + "'" + document.querySelector('#lb_content_agregar_input').value + "'" + ' ' + 'ha sido agregado correctamente a la base de datos', false);
         document.querySelector('#lb_content_agregar_input').value = '';
         LMO.reason = LMO.defaultReason;
         document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro usuario a la base de datos';
-        loadAll();
+        loadAll(true);
     };
 }
 
 /* Buscar usuario */
 function buscarUsuario(){
     if(document.querySelector('#lb_content_buscar_input').value.length < 3){
-        return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres');
+        return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres', true);
     }
     if(document.querySelector('#lb_content_buscar_input').value.length > 16){
-        return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres');
+        return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres', true);
     }
     var active = dataBase.result;
     var data = active.transaction(['players'], 'readonly');
@@ -101,7 +98,7 @@ function buscarUsuario(){
     data.oncomplete = function(){
         for(var key in elements){
             if(document.querySelector('#lb_content_buscar_input').value === elements[key].nick){
-                log(true, '', 'Se ha encontrado el usuario en la base de datos');
+                log(true, '', 'Se ha encontrado el usuario en la base de datos', false);
                 location.href = '#b' + elements[key].id;
                 quitarLB();
                 if(lastElement != undefined){
@@ -120,7 +117,7 @@ function buscarUsuario(){
             return;
             }
             else {
-                log(true, '', 'No se ha encontrado el usuario en la base de datos');
+                log(true, '', 'No se ha encontrado el usuario en la base de datos', true);
             }
         }
     }
@@ -128,7 +125,7 @@ function buscarUsuario(){
 
 /* Cargar todos los usuarios */
 
-function loadAll(){
+function loadAll(scroll){
     var active = dataBase.result;
     var data = active.transaction(['players'], 'readonly');
     var object = data.objectStore('players');
@@ -144,36 +141,13 @@ function loadAll(){
     data.oncomplete = function(){
         var outerHTML = '';
         for(var key in elements){
-            outerHTML += '\n\<tr id=' + 'userN' + elements[key].id + '>\n\<td style="width: 5% !important;" href="#b' + elements[key].id + '">' + elements[key].id + '</td>\n\<td style="width: 25% !important;">' + elements[key].nick + '</td>\n\<td style="width: 50% !important;">' + elements[key].reason + '</td>\n\<td style="width: 20% !important;">' + elements[key].fecha + '</td>\n\</tr>';
+            outerHTML += '\n\<tr id=' + 'userN' + elements[key].id + ' ' + 'class="tbodyTr">\n\<td style="width: 5% !important;" href="#b' + elements[key].id + '">' + elements[key].id + '</td>\n\<td style="width: 25% !important;">' + elements[key].nick + '</td>\n\<td style="width: 50% !important;">' + elements[key].reason + '</td>\n\<td style="width: 20% !important;">' + elements[key].fecha + '</td>\n\</tr>';
         }
         elements = [];
         document.querySelector('#elementsList').innerHTML = outerHTML;
-    };
-}
-
-/* Cargar todos por los usuarios en orden de nick (falta probar) */
-
-function cargarTodosPorNick(){
-    var active = dataBase.result;
-    var data = active.transaction(['players'], 'readonly');
-    var object = data.objectStore('players');
-    var index = object.index('by_nick');
-    var elements = [];
-    index.openCursor().onsuccess = function(e){
-        var result = e.target.result;
-        if(result === null){
-            return;
+        if(scroll){
+            $("html, body").animate({scrollTop: $(document).height()}, 0);
         }
-        elements.push(result.value);
-        result.continue();
-    };
-    data.oncomplete = function(){
-        var outerHTML = '';
-        for(var key in elements){
-            outerHTML += '\n\<tr>\n\<td style="width: 5% !important;" href="#b' + elements[key].id + '">' + elements[key].id + '</td>\n\<td style="width: 25% !important;">' + elements[key].nick + '</td>\n\<td style="width: 50% !important;">' + elements[key].reason + '</td>\n\<td style="width: 20% !important;">' + elements[key].fecha + '</td>\n\</tr>';
-        }
-        elements = [];
-        document.querySelector('#elementsList').innerHTML = outerHTML;
     };
 }
 
@@ -182,11 +156,11 @@ function cargarTodosPorNick(){
 function usuariosDePrueba(){
     /**/
     if(udpVar < 100){
-        myVar = setTimeout(function(){ usuariosDePrueba() }, 250);
+        myVar = setTimeout(function(){ usuariosDePrueba() }, 125);
     }
     var random = parseInt((Math.random() * LMO.reasons.length) + 1);
     LMO.reasonSelect(random);
-    var UDP = 'UDP' + ' ' + udpVar.toString();
+    var UDP = 'UDP' + udpVar.toString();
     /**/
     var active = dataBase.result;
     var data = active.transaction(['players'], 'readwrite');
@@ -200,10 +174,9 @@ function usuariosDePrueba(){
         console.log(request.error.name + '\n\n' + request.error.message);
     };
     data.oncomplete = function(e){
-        log(true, '', 'Usuario de prueba número' + ' ' + udpVar + ' ' + ' agregado');
+        log(true, '', 'Usuario de prueba número' + ' ' + udpVar + ' ' + ' agregado', false);
         udpVar = udpVar + 1;
-        document.getElementById('log_container').scrollIntoView();
-        loadAll();
+        loadAll(true);
     };
 }
 
@@ -524,15 +497,21 @@ var LOG = {
     },
     log_textoRegistrado: 'No hay registro de eventos',
     log_horaRegistrada: 'Null',
-    log_cambiarTexto: function(t,h, hr){
+    log_cambiarTexto: function(t, h, hr, ie){
         this.log_textoRegistrado = t;
         if(hr === false){
             this.log_horaRegistrada = h;
         }
+        if(ie){
+            document.getElementById('log_item_02').style.color = mainColor;
+        }
+        else {
+            document.getElementById('log_item_02').style.color = '#adafb2';
+        }
         document.getElementById('log_item_02').innerHTML = '[' + h + ']:' + ' ' + t;
     },
     log_mostrarLog: function(){
-        log(true, 'horaregistrada', this.log_textoRegistrado);
+        log(true, 'horaregistrada', this.log_textoRegistrado, false);
     }
 };
 
@@ -540,7 +519,7 @@ var LOG = {
 
 var logTVar;
 
-function log(action, hora, text){
+function log(action, hora, text, isError){
     var hrs = false;
     if(hora === 'horaregistrada'){
         hrs = true;
@@ -558,14 +537,14 @@ function log(action, hora, text){
     if(action === true){
         if(LOG.log_activo === true){
             clearTimeout(logTVar);
-            logTVar = setTimeout(function(){ log(false,text) }, 5000);
+            logTVar = setTimeout(function(){ log(false, hora, text, isError) }, 5000);
         }
         else {
             LOG.log_activo = true;
             LOG.log_cambiarContenido();
-            logTVar = setTimeout(function(){ log(false, text) }, 5000);
+            logTVar = setTimeout(function(){ log(false, hora, text, isError) }, 5000);
         }
-        LOG.log_cambiarTexto(text, hora, hrs);
+        LOG.log_cambiarTexto(text, hora, hrs, isError);
     }
     else {
         clearTimeout(logTVar);
@@ -620,6 +599,10 @@ $('#lb_razon_a_08').click(function(){
 
 $('#log_item_01').click(function(){
     LOG.log_mostrarLog();
+});
+
+$('#irArriba').click(function(){
+    $("html, body").animate({scrollTop: $(document).height() - $(document).height()}, 1000);
 });
 
 /*** Usuarios ***/
