@@ -449,29 +449,29 @@ a {
     margin-bottom: 5px;
     margin-right: 60px;
     cursor: pointer;
-    background-image: url('/img/subir-default.png');
+    background-image: url('img/subir-default.png');
 }
 
 #log_item_subir:hover {
-    background-image: url('/img/subir-hover.png');
+    background-image: url('img/subir-hover.png');
 }
 
 #log_item_subir:active {
-    background-image: url('/img/subir-active.png');
+    background-image: url('img/subir-active.png');
 }
 
 .log_item_subir_activado {
-    background-image: url(/img/subir-false.png) !important;
+    background-image: url('img/subir-false.png') !important;
     cursor: default !important;
 }
 
 .log_item_subir_activado:hover {
-    background-image: url(/img/subir-false.png) !important;
+    background-image: url('img/subir-false.png') !important;
     cursor: default !important;
 }
 
 .log_item_subir_activado:active {
-    background-image: url(/img/subir-false.png) !important;
+    background-image: url('img/subir-false.png') !important;
     cursor: default !important;
 }
 
@@ -484,28 +484,28 @@ a {
     margin-bottom: 5px;
     margin-right: 30px;
     cursor: pointer;
-    background-image: url('/img/bajar-default.png');
+    background-image: url('img/bajar-default.png');
 }
 
 #log_item_bajar:hover {
-    background-image: url('/img/bajar-hover.png');
+    background-image: url('img/bajar-hover.png');
 }
 
 #log_item_bajar:active {
-    background-image: url('/img/bajar-active.png');
+    background-image: url('img/bajar-active.png');
 }
 
 .log_item_bajar_activado {
-    background-image: url(/img/bajar-false.png) !important;
+    background-image: url('img/bajar-false.png') !important;
     cursor: default !important;
 }
 
 .log_item_bajar_activado:hover {
-    background-image: url(/img/bajar-false.png) !important;
+    background-image: url('img/bajar-false.png') !important;
     cursor: default !important;
 }
 
 .log_item_bajar_activado:active {
-    background-image: url(/img/bajar-false.png) !important;
+    background-image: url('img/bajar-false.png') !important;
     cursor: default !important;
 }
