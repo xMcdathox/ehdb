@@ -6,12 +6,18 @@ var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedD
     udpVar = 1, myVar,
     mainColor = '#FF7D00';
 
+/*** Document ready ***/
+
+$(document).ready(function(){
+    LOG.cargarBaseDeDatos();
+});
+
 /*** indexedDB ***/
 
 /* Cargar la base de datos */
 
 function startDB(){
-    dataBase = indexedDB.open('newehdbtest28', 1);
+    dataBase = indexedDB.open('newehdbtest45', 1);
     dataBase.onupgradeneeded = function(e){
         var active = dataBase.result;
         var object = active.createObjectStore('players', {keyPath: 'id', autoIncrement: true});
@@ -48,7 +54,7 @@ function ingresarUsuario(){
                 var parentId = '#' + par.attr('id');
                 var parentCh = $(parentId).children();
                 $(parentCh).animate({color: mainColor}, 750);
-                $(parentCh).animate({color: '#adafb2'}, 750);
+                $(parentCh).animate({color: '#adafb2'}, 250);
                 $('html, body').animate({scrollTop: $(parentId).offset().top -30}, 1000);
             }
             return log(true, '', 'El usuario ya se encuentra en la base de datos', true);
@@ -69,7 +75,7 @@ function ingresarUsuario(){
     data.oncomplete = function(e){
         log(true, '', 'El usuario' + ' ' + "'" + document.querySelector('#lb_content_agregar_input').value + "'" + ' ' + 'ha sido agregado correctamente a la base de datos', false);
         document.querySelector('#lb_content_agregar_input').value = '';
-        LMO.reason = LMO.defaultReason;
+        quitarLB();
         document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro usuario a la base de datos';
         loadAll(true);
     };
@@ -101,19 +107,8 @@ function buscarUsuario(){
                 log(true, '', 'Se ha encontrado el usuario en la base de datos', false);
                 location.href = '#b' + elements[key].id;
                 quitarLB();
-                if(lastElement != undefined){
-                    $(lastElement.children()).animate({color: "#adafb2"}, 750); // ehdb_b0.2
-                }
-                var elt = document.getElementsByTagName('td');
-                for(var eln in elt){
-                    if(parseInt(elt[eln].innerHTML) === elements[key].id){
-                        var par = $(elt[eln]).parent();
-                        lastElement = par;
-                        $(par.children()).animate({color: mainColor}, 750); // ehdb_b0.2
-                        user.userSelectedId = par.attr('id');
-                        $('html, body').animate({scrollTop: $('#' + user.userSelectedId).offset().top -30}, 1000); // ehdb_b0.2
-                    }
-                }
+                user.seleccionarUsuario(elements[key].id, false, true);
+                $('html, body').animate({scrollTop: $('#' + user.userSelectedId).offset().top -30}, 1000);
             return;
             }
             else {
@@ -141,7 +136,7 @@ function loadAll(scroll){
     data.oncomplete = function(){
         var outerHTML = '';
         for(var key in elements){
-            outerHTML += '\n\<tr id=' + 'userN' + elements[key].id + ' ' + 'class="tbodyTr">\n\<td style="width: 5% !important;" href="#b' + elements[key].id + '">' + elements[key].id + '</td>\n\<td style="width: 25% !important;">' + elements[key].nick + '</td>\n\<td style="width: 50% !important;">' + elements[key].reason + '</td>\n\<td style="width: 20% !important;">' + elements[key].fecha + '</td>\n\</tr>';
+            outerHTML += '\n\<div class="dtrlink" onclick="user.seleccionarUsuario(' + elements[key].id + ', true, false)"><div class="dtr userConHover" id="userN' + elements[key].id + '">\n\<div style="width: 7.5% !important;" class="dtd" href="#b' + elements[key].id + '">' + elements[key].id + '</div>\n\<div style="width: 22.5% !important;" class="dtd tUserNick">' + elements[key].nick + '</div>\n\<div style="width: 50%; !important" class="dtd">' + elements[key].reason + '</div>\n\<div style="width: 18.5%; !important" class="dtd">' + elements[key].fecha + '</div>\n\</div></div>';
         }
         elements = [];
         document.querySelector('#elementsList').innerHTML = outerHTML;
@@ -154,27 +149,25 @@ function loadAll(scroll){
 /* Agregar usuarios de prueba */
 
 function usuariosDePrueba(){
-    /**/
-    if(udpVar < 100){
-        myVar = setTimeout(function(){ usuariosDePrueba() }, 125);
+    if(udpVar < 50){
+        myVar = setTimeout(function(){ usuariosDePrueba() }, 150);
     }
     var random = parseInt((Math.random() * LMO.reasons.length) + 1);
-    LMO.reasonSelect(random);
-    var UDP = 'UDP' + udpVar.toString();
-    /**/
+    var UDPreason = LMO.reasons[random-1];
+    var UDP = 'UDP' + ' ' + udpVar.toString();
     var active = dataBase.result;
     var data = active.transaction(['players'], 'readwrite');
     var object = data.objectStore('players');
     var request = object.put({
         nick: UDP,
-        reason: LMO.reason,
+        reason: UDPreason,
         fecha: obtenerFechaActual('fechayhora')
     });
     request.onerror = function(e){
         console.log(request.error.name + '\n\n' + request.error.message);
     };
     data.oncomplete = function(e){
-        log(true, '', 'Usuario de prueba número' + ' ' + udpVar + ' ' + ' agregado', false);
+        log(true, '', 'Usuario de prueba número' + ' ' + udpVar + ' ' + ' agregado correctamente', false);
         udpVar = udpVar + 1;
         loadAll(true);
     };
@@ -248,7 +241,7 @@ var LMO = {
                 /* Block */
                 $('#lb_content_agregar').css({'display': 'block'});
                 /* Texto del LB Title */
-                document.getElementById('lb_title').innerHTML = 'Ingresar un usuario a la base de datos';
+                document.getElementById('lb_title').innerHTML = 'INGRESAR UN USUARIO A LA BASE DE DATOS';
                 break;
             }
             case 02: {
@@ -257,7 +250,7 @@ var LMO = {
                 /* Block */
                 $('#lb_content_buscar').css({'display': 'block'});
                 /* Texto del LB Title */
-                document.getElementById('lb_title').innerHTML = 'Buscar un usuario en la base de datos';
+                document.getElementById('lb_title').innerHTML = 'BUSCAR UN USUARIO EN LA BASE DE DATOS';
                 break;
             }
         }
@@ -282,28 +275,51 @@ var LMO = {
     defaultReason: 'Sin especificar',
     reason: 'Sin especificar',
     reasonElementSelectedId: '',
+    lastReasonElementSelectedId: '',
     reasonSelect: function(reason){
-        var targetId = '#lb_razon_a_0' + reason.toString() + '_status';
-        var children = $('.lb_razon_option').children();
-        for(var i = 0; i < children.length; i++){
-            if('#' + children[i].id != targetId){
-                children[i].style.backgroundColor = '#adafb2';
-            }
+        var targetId = '#lb_razon_a_0' + reason.toString();
+        this.reasonElementSelectedId = targetId.substring(1, targetId.length);
+        var lastTextT;
+        var textT = $(targetId).children();
+        var lastDivT;
+        var divT = $(textT).children();
+        if(this.lastReasonElementSelectedId === targetId.substring(1, targetId.length)){
+            return false;
         }
-        $(targetId).css({'background-color': mainColor});
+        if(this.lastReasonElementSelectedId != -1){
+            lastTextT = $('#' + this.lastReasonElementSelectedId).children();
+            lastDivT = $(lastTextT).children();
+            $(lastTextT).animate({color: '#adafb2'}, 250); // Color
+            $(lastDivT).animate({backgroundColor: '#adafb2'}, 250); // bgColor
+            $('#' + this.lastReasonElementSelectedId).removeClass('selectedReason');
+            $('#' + this.lastReasonElementSelectedId).addClass('unselectedReason');
+        }
+        $(textT).css('color', mainColor);
+        $(divT).css('background-color', mainColor);
+        $(targetId).removeClass('unselectedReason');
+        $(targetId).addClass('selectedReason');
         this.reason = this.reasons[reason-1];
-        this.reasonElementSelectedId = targetId.substring(1,targetId.length);
+        this.lastReasonElementSelectedId = targetId.substring(1, targetId.length);
     },
-    restablecerValores: function(){ // Restablecer los valores al cerrar el LB
+    restablecerValores: function(){
+        document.querySelector('#lb_content_agregar_input').value = '';
+        document.querySelector('#lb_content_buscar_input').value = '';
         this.reason = this.defaultReason;
+        $('#' + this.reasonElementSelectedId).children().animate({color: '#adafb2'}, 250); // Color
+        $('#' + this.reasonElementSelectedId).children().children().animate({backgroundColor: '#adafb2'}, 250); // bgColor
+        $('#' + this.reasonElementSelectedId).removeClass('selectedReason');
+        $('#' + this.reasonElementSelectedId).addClass('unselectedReason');
         this.reasonElementSelectedId = '';
-    }
+        this.lastReasonElementSelectedId = '';
+    },
+    defaultUserTitle: 'SELECCIONA UN USUARIO',
+    userTitle: ''
 };
 
 /* ML_01 */
 
 $('#ml_01').click(function(){
-    usuariosDePrueba();//
+    usuariosDePrueba();
     return;
 });
 
@@ -325,6 +341,13 @@ $('#ml_03').click(function(){
     $('#lb_container').css({'margin-top': -$('#lb_container').height() / 2});
     $('#lb_container').css({'margin-left': -$('#lb_container').width() / 2});
     fadeLb('in');
+    return;
+});
+
+/* ML_04 */
+
+$('#ml_05').click(function(){
+    user.deseleccionarUsuario();
     return;
 });
 
@@ -358,118 +381,6 @@ function fadeLb(action){
     }
 }
 
-/* Cambiar el color del status de los botones de la funcion razon */
-$(document).ready(function(){
-    //
-    var helements = [
-        '#lb_razon_a_01',
-        '#lb_razon_a_02',
-        '#lb_razon_a_03',
-        '#lb_razon_a_04',
-        '#lb_razon_a_05',
-        '#lb_razon_a_06',
-        '#lb_razon_a_07',
-        '#lb_razon_a_08'
-    ];
-    //
-    var telements = [
-        '#lb_razon_a_01_status',
-        '#lb_razon_a_02_status',
-        '#lb_razon_a_03_status',
-        '#lb_razon_a_04_status',
-        '#lb_razon_a_05_status',
-        '#lb_razon_a_06_status',
-        '#lb_razon_a_07_status',
-        '#lb_razon_a_08_status'
-    ];
-    //
-    var moverc = 'white', moutc = '#adafb2';
-    // mouseover
-    $(helements[0]).mouseover(function(){
-        if(telements[0].substring(1,telements[0].length) != LMO.reasonElementSelectedId){
-            $(telements[0]).css('background-color', moverc);
-        }
-    });
-    $(helements[1]).mouseover(function(){
-        if(telements[1].substring(1,telements[1].length) != LMO.reasonElementSelectedId){
-            $(telements[1]).css('background-color', moverc);
-        }
-    });
-    $(helements[2]).mouseover(function(){
-        if(telements[2].substring(1,telements[2].length) != LMO.reasonElementSelectedId){
-            $(telements[2]).css('background-color', moverc);
-        }
-    });
-    $(helements[3]).mouseover(function(){
-        if(telements[3].substring(1,telements[3].length) != LMO.reasonElementSelectedId){
-            $(telements[3]).css('background-color', moverc);
-        }
-    });
-    $(helements[4]).mouseover(function(){
-        if(telements[4].substring(1,telements[4].length) != LMO.reasonElementSelectedId){
-            $(telements[4]).css('background-color', moverc);
-        }
-    });
-    $(helements[5]).mouseover(function(){
-        if(telements[5].substring(1,telements[5].length) != LMO.reasonElementSelectedId){
-            $(telements[5]).css('background-color', moverc);
-        }
-    });
-    $(helements[6]).mouseover(function(){
-        if(telements[6].substring(1,telements[6].length) != LMO.reasonElementSelectedId){
-            $(telements[6]).css('background-color', moverc);
-        }
-    });
-    $(helements[7]).mouseover(function(){
-        if(telements[7].substring(1,telements[7].length) != LMO.reasonElementSelectedId){
-            $(telements[7]).css('background-color', moverc);
-        }
-    });
-    // mouseout
-    $(helements[0]).mouseout(function(){
-        if(telements[0].substring(1,telements[0].length) != LMO.reasonElementSelectedId){
-            $(telements[0]).css('background-color', moutc);
-        }
-    });
-    $(helements[1]).mouseout(function(){
-        if(telements[1].substring(1,telements[1].length) != LMO.reasonElementSelectedId){
-            $(telements[1]).css('background-color', moutc);
-        }
-    });
-    $(helements[2]).mouseout(function(){
-        if(telements[2].substring(1,telements[2].length) != LMO.reasonElementSelectedId){
-            $(telements[2]).css('background-color', moutc);
-        }
-    });
-    $(helements[3]).mouseout(function(){
-        if(telements[3].substring(1,telements[3].length) != LMO.reasonElementSelectedId){
-            $(telements[3]).css('background-color', moutc);
-        }
-    });
-    $(helements[4]).mouseout(function(){
-        if(telements[4].substring(1,telements[4].length) != LMO.reasonElementSelectedId){
-            $(telements[4]).css('background-color', moutc);
-        }
-    });
-    $(helements[5]).mouseout(function(){
-        if(telements[5].substring(1,telements[5].length) != LMO.reasonElementSelectedId){
-            $(telements[5]).css('background-color', moutc);
-        }
-    });
-    $(helements[6]).mouseout(function(){
-        if(telements[6].substring(1,telements[6].length) != LMO.reasonElementSelectedId){
-            $(telements[6]).css('background-color', moutc);
-        }
-    });
-    $(helements[7]).mouseout(function(){
-        if(telements[7].substring(1,telements[7].length) != LMO.reasonElementSelectedId){
-            $(telements[7]).css('background-color', moutc);
-        }
-    });
-    /* Consola */
-    LOG.cargarBaseDeDatos();
-});
-
 /*** Log ***/
 
 /* Objeto principal para esta funcion */
@@ -477,6 +388,7 @@ $(document).ready(function(){
 var LOG = {
     cargarBaseDeDatos: function(){
         startDB();
+        document.getElementById('ml_userTitle').innerHTML = LMO.defaultUserTitle;
     },
     log_activo: false,
     log_cin: '01',
@@ -601,12 +513,87 @@ $('#log_item_01').click(function(){
     LOG.log_mostrarLog();
 });
 
-$('#irArriba').click(function(){
-    $("html, body").animate({scrollTop: $(document).height() - $(document).height()}, 1000);
+/* Botones para subir y bajar */
+
+var TopBottomStatus = true;
+
+$('#log_item_subir').click(function(){
+    if(TopBottomStatus){
+        $("html, body").animate({scrollTop: $(document).height() - $(document).height()}, 1000);
+        $('#log_item_subir').addClass('log_item_subir_activado');
+        $('#log_item_bajar').addClass('log_item_bajar_activado');
+        TopBottomStatus = false;
+        setTimeout(function(){ 
+            $('#log_item_subir').removeClass('log_item_subir_activado');
+            $('#log_item_bajar').removeClass('log_item_bajar_activado');
+            TopBottomStatus = true; 
+        }, 1015);
+    }
+});
+
+$('#log_item_bajar').click(function(){
+    if(TopBottomStatus){
+        $("html, body").animate({scrollTop: $(document).height() - $(document).height() / 3}, 1000);
+        $('#log_item_subir').addClass('log_item_subir_activado');
+        $('#log_item_bajar').addClass('log_item_bajar_activado');
+        TopBottomStatus = false;
+        setTimeout(function(){ 
+            $('#log_item_subir').removeClass('log_item_subir_activado');
+            $('#log_item_bajar').removeClass('log_item_bajar_activado');
+            TopBottomStatus = true; 
+        }, 1015);
+    }
 });
 
 /*** Usuarios ***/
 
 var user = {
-    userSelectedId: ''
+    userSelectedId: '',
+    ultimoUsuarioSeleccionado: -1,
+    seleccionarUsuario: function(iId, oncompleteMsg, onerrorMsg){
+        if(this.userSelectedId != 'userN' + iId.toString()){
+            //
+            this.userSelectedId = 'userN' + iId.toString();
+            if(this.ultimoUsuarioSeleccionado != -1){
+                $('#' + this.ultimoUsuarioSeleccionado).children().animate({color: '#adafb2'}, 250); // Color
+                document.getElementById(this.ultimoUsuarioSeleccionado).classList.remove('userSinHover');
+                document.getElementById(this.ultimoUsuarioSeleccionado).classList.add('userConHover');
+            }
+            //
+            var logelement = $('#' + this.userSelectedId).children();
+            $(logelement).css('color', mainColor);
+            document.getElementById(this.userSelectedId).classList.remove('userConHover');
+            document.getElementById(this.userSelectedId).classList.add('userSinHover');
+            for(var i = 0; i < logelement.length; i++){
+                if($(logelement[i]).hasClass('tUserNick')){
+                    if(oncompleteMsg){
+                        log(true, '', 'Usuario seleccionado' + ' ' + '(' + logelement[i].innerHTML + ')', false);
+                    }
+                    LMO.userTitle = logelement[i].innerHTML;
+                    document.getElementById('ml_userTitle').innerHTML = LMO.userTitle;
+                    $('#ml_04').children().removeClass('main_nav_link_bloqueado');
+                    $('#ml_05').children().removeClass('main_nav_link_bloqueado');
+                }
+            }
+            this.ultimoUsuarioSeleccionado = 'userN' + iId.toString();
+        }
+        else {
+            if(onerrorMsg){
+                log(true, '', 'Usuario previamente seleccionado', true);
+            }
+        }
+        return false;
+    },
+    deseleccionarUsuario: function(){
+        var lastUser = $('#' + this.ultimoUsuarioSeleccionado);
+        $(lastUser).children().animate({color: '#adafb2'}, 250); // Color
+        document.getElementById(this.ultimoUsuarioSeleccionado).classList.remove('userSinHover');
+        document.getElementById(this.ultimoUsuarioSeleccionado).classList.add('userConHover');
+        $('#ml_04').children().addClass('main_nav_link_bloqueado');
+        $('#ml_05').children().addClass('main_nav_link_bloqueado');
+        document.getElementById('ml_userTitle').innerHTML = LMO.defaultUserTitle;
+        log(true, '', 'Usuario deseleccionado', false);
+        this.userSelectedId = '';
+        this.ultimoUsuarioSeleccionado = -1;
+    }
 };

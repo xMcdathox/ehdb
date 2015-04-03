@@ -15,33 +15,37 @@
         </header>
         <nav id='main_nav'>
             <div class='main_nav_section'>BASE DE DATOS</div>
-            <a id='ml_01' href='#' onclick="return false;"><div class='main_nav_link'>Volver a cargar la base de datos</div></a>
+            <a id='ml_01' href='#' onclick="return false;"><div class='main_nav_link'>DEV: Cargar 50 usuarios de prueba</div></a>
             <a id='ml_02' href='#' onclick="return false;"><div class='main_nav_link'>Agregar un usuario a la base de datos</div></a>
             <a id='ml_03' href='#' onclick="return false;"><div class='main_nav_link'>Buscar un usuario en la base de datos</div></a>
-            <a href='#'><div class='main_nav_link main_nav_link_bloqueado'>Ver más información sobre este usuario</div></a>
-            <a href='#'><div class='main_nav_link main_nav_link_bloqueado'>Eliminar de la base de datos</div></a>
+            <!---->
+            <div id='ml_userTitle' class='main_nav_section'>Null</div>
+            <a id='ml_04' href='#' onclick="return false;"><div class='main_nav_link main_nav_link_bloqueado'>Ver más información sobre este usuario</div></a>
+            <a id='ml_05' href='#' onclick="return false;"><div class='main_nav_link main_nav_link_bloqueado'>Deseleccionar usuario</div></a>
         </nav>
         <div id='contenedor'>
-            <table>
-                <caption>Usuarios registrados en la base de datos</caption>
-                <thead>
-                    <tr>
-                        <th style='width: 7.5% !important;'>#</th>
-                        <th style='width: 22.5% !important;'>Apodo</th>
-                        <th style='width: 50%; !important'>Razón de ingreso a la base de datos</th>
-                        <th style='width: 20% !important;'>Fecha de ingreso</th>
-                    </tr>
-                </thead>
-                <tbody id='elementsList'>
-                    <tr id='' class='tbodyTr'>
-                        <td style='width: 7.5% !important;'>Null</td>
-                        <td style='width: 22.5% !important;'>Null</td>
-                        <td style='width: 50%; !important'>Null</td>
-                        <td style='width: 20%; !important'>Null</td>
-                    </tr>
-                </tbody>
-            </table>
-            <a href='#' onclick='return false;'><div id='irArriba'>Volver arriba</div></a>
+            <!---->
+            <div class='dtable'>
+                <div class='dcaption'>Usuarios registrados en la base de datos</div>
+                <div class='dthead'>
+                    <div class='dtr'>
+                        <div style='width: 7.5% !important;' class='dth'>#</div>
+                        <div style='width: 22.5% !important;' class='dth'>Apodo</div>
+                        <div style='width: 50%; !important' class='dth'>Razón de ingreso a la base de datos</div>
+                        <div style='width: 18.5% !important;' class='dth'>Fecha de ingreso</div>
+                    </div>
+                </div>
+                <div class='dtbody' id='elementsList'>
+                    <div class='dtr'>
+                        <div style='width: 7.5% !important;' class='dtd'>Null</div>
+                        <div style='width: 22.5% !important;' class='dtd'>Null</div>
+                        <div style='width: 50%; !important' class='dtd'>Null</div>
+                        <div style='width: 18.5%; !important' class='dtd'>Null</div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div id='infoSubirBajar'>Para desplazarte más rápido hacia arriba y abajo, usa los botones subir y bajar de la barra inferior</div>
         </div>
         <div id='lb_background'></div>
         <div id='lb_container'>
@@ -54,30 +58,30 @@
                     <input id='lb_content_agregar_input' class='lb_input' type='text' placeholder=''>
                     <div class='lb_text'>Razón de ingreso</div>
                     <div id='lb_content_agregar_razon' class='lb_razon'>
-                        <a id='lb_razon_a_01' href='#' onclick='return false;'>
+                        <div id='lb_razon_a_01' class='unselectedReason'>
                             <div class='lb_razon_option'></div>
-                        </a>
-                        <a id='lb_razon_a_02' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_02' class='unselectedReason'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
-                        </a>
-                        <a id='lb_razon_a_03' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_03' class='unselectedReason'>
                             <div class='lb_razon_option'></div>
-                        </a>
-                        <a id='lb_razon_a_04' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_04' class='unselectedReason'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
-                        </a>
-                        <a id='lb_razon_a_05' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_05' class='unselectedReason'>
                             <div class='lb_razon_option'></div>
-                        </a>
-                        <a id='lb_razon_a_06' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_06' class='unselectedReason'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
-                        </a>
-                        <a id='lb_razon_a_07' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_07' class='unselectedReason'>
                             <div  class='lb_razon_option'></div>
-                        </a>
-                        <a id='lb_razon_a_08' href='#' onclick='return false;'>
+                        </div>
+                        <div id='lb_razon_a_08' class='unselectedReason'>
                             <div class='lb_razon_option lb_razon_option_black'></div>
-                        </a>
+                        </div>
                     </div>
                     <a id='href_ingresarusuario' href='#' onclick='return false;'><div id='lb_content_agregar_button' class='lb_button'>Ingresar usuario a la base de datos</div></a>
                 </div>
@@ -94,6 +98,9 @@
         <div id='log_container'>
             <a id='log_item_01' href='#' onclick='return false;'><div id='log_text'>Registro de eventos</div></a>
             <div id='log_item_02' class='log_log'></div>
+            <!---->
+            <div id='log_item_subir'></div>
+            <div id='log_item_bajar'></div>
         </div>
         <!---->
         <script src="js/main.js"></script>
