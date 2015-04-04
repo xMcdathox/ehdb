@@ -35,11 +35,16 @@ function startDB(){
 /* Ingresar usuario */
 
 function ingresarUsuario(){
-    if(document.querySelector('#lb_content_agregar_input').value.length < 3){
+    /*if(document.querySelector('#lb_content_agregar_input').value.length < 3){
         return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres', true);
     }
     if(document.querySelector('#lb_content_agregar_input').value.length > 16){
         return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres', true);
+    }*/
+    RIOT(document.querySelector('#lb_content_agregar_input').value);
+    if(RiotApiConf.STATUS === false){
+        log(true, '', 'Invocador no encontrado', true);
+        return false;
     }
     /* Verificar que el usuario no este en la base de datos */
     var children = $('tr').children();
@@ -302,6 +307,7 @@ var LMO = {
         this.lastReasonElementSelectedId = targetId.substring(1, targetId.length);
     },
     restablecerValores: function(){
+        RiotApiConf.STATUS = false; // RIOT
         document.querySelector('#lb_content_agregar_input').value = '';
         document.querySelector('#lb_content_buscar_input').value = '';
         this.reason = this.defaultReason;
@@ -597,3 +603,30 @@ var user = {
         this.ultimoUsuarioSeleccionado = -1;
     }
 };
+
+/* TEST RIOT GAMES API */
+
+var RiotApiConf = {
+    REGION: 'na',
+    API_KEY: '93ad4cc0-b04d-4dee-b2c2-a1fe49d63d85',
+    STATUS: false
+};
+
+function RIOT(SummonerName){
+    $.ajax({
+        url: 'https://na.api.pvp.net/api/lol/' + RiotApiConf.REGION + '/v1.4/summoner/by-name/' + SummonerName + '?api_key=' + RiotApiConf.API_KEY,
+        type: 'GET',
+        dataType: 'json',
+        data: {},
+        success: function (json){
+            var SUMMONER_NAME_NOSPACES = SummonerName.replace(" ", "");
+            SUMMONER_NAME_NOSPACES = SUMMONER_NAME_NOSPACES.toLowerCase().trim();
+            console.log('Riot: true');
+            return RiotApiConf.STATUS = true;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown){
+            console.log('Riot: false');
+            return RiotApiConf.STATUS = false;
+        }
+    });
+}
