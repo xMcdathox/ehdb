@@ -17,7 +17,7 @@ $(document).ready(function(){
 /* Cargar la base de datos */
 
 function startDB(){
-    dataBase = indexedDB.open('newehdbtest45', 1);
+    dataBase = indexedDB.open('newehdbtest47', 1);
     dataBase.onupgradeneeded = function(e){
         var active = dataBase.result;
         var object = active.createObjectStore('players', {keyPath: 'id', autoIncrement: true});
@@ -34,35 +34,24 @@ function startDB(){
 
 /* Ingresar usuario */
 
-function ingresarUsuario(){
-    /*if(document.querySelector('#lb_content_agregar_input').value.length < 3){
-        return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres', true);
-    }
-    if(document.querySelector('#lb_content_agregar_input').value.length > 16){
-        return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres', true);
-    }*/
-    RIOT(document.querySelector('#lb_content_agregar_input').value);
-    if(RiotApiConf.STATUS === false){
-        log(true, '', 'Invocador no encontrado', true);
-        return false;
-    }
+function ingresarUsuario(apodo){
     /* Verificar que el usuario no este en la base de datos */
-    var children = $('tr').children();
+    var children = $('.dtr').children();
     for(var i = 0; i < children.length; i++){
-        if(children[i].innerHTML === document.querySelector('#lb_content_agregar_input').value){
+        if(children[i].innerHTML === apodo){
             var par = $(children[i]).parent();
             console.log(par.attr('id'));
             if(par.attr('id') === user.userSelectedId){ // Solo hacer el scroll
                 $('html, body').animate({scrollTop: $('#' + user.userSelectedId).offset().top -30}, 1000);
             }
-            else { // Hacer los cambios con una ID alternativa en caso de no ser el usuario previamente seleccionado
+            else {
                 var parentId = '#' + par.attr('id');
                 var parentCh = $(parentId).children();
                 $(parentCh).animate({color: mainColor}, 750);
                 $(parentCh).animate({color: '#adafb2'}, 250);
                 $('html, body').animate({scrollTop: $(parentId).offset().top -30}, 1000);
             }
-            return log(true, '', 'El usuario ya se encuentra en la base de datos', true);
+            return log(true, '', 'El invocador ya se encuentra en la base de datos', true);
         }
     }
     /**/
@@ -70,7 +59,7 @@ function ingresarUsuario(){
     var data = active.transaction(['players'], 'readwrite');
     var object = data.objectStore('players');
     var request = object.put({
-        nick: document.querySelector('#lb_content_agregar_input').value,
+        nick: apodo,
         reason: LMO.reason,
         fecha: obtenerFechaActual('fechayhora')
     });
@@ -78,21 +67,19 @@ function ingresarUsuario(){
         console.log(request.error.name + '\n\n' + request.error.message);
     };
     data.oncomplete = function(e){
-        log(true, '', 'El usuario' + ' ' + "'" + document.querySelector('#lb_content_agregar_input').value + "'" + ' ' + 'ha sido agregado correctamente a la base de datos', false);
+        log(true, '', 'El invocador' + ' ' + "'" + apodo + "'" + ' ' + 'ha sido agregado correctamente a la base de datos', false);
         document.querySelector('#lb_content_agregar_input').value = '';
         quitarLB();
-        document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro usuario a la base de datos';
+        document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro invocador a la base de datos';
         loadAll(true);
     };
 }
 
 /* Buscar usuario */
 function buscarUsuario(){
-    if(document.querySelector('#lb_content_buscar_input').value.length < 3){
-        return log(true, '', 'El apodo del usuario debe tener 3 o más caracteres', true);
-    }
-    if(document.querySelector('#lb_content_buscar_input').value.length > 16){
-        return log(true, '', 'El apodo del usuario debe tener como máximo 16 caracteres', true);
+    var tValue = document.querySelector('#lb_content_buscar_input').value;
+    if(tValue === ''){
+        return log(true, '', 'Escribe el nombre del invocador que quieres buscar', true);
     }
     var active = dataBase.result;
     var data = active.transaction(['players'], 'readonly');
@@ -108,8 +95,8 @@ function buscarUsuario(){
     };
     data.oncomplete = function(){
         for(var key in elements){
-            if(document.querySelector('#lb_content_buscar_input').value === elements[key].nick){
-                log(true, '', 'Se ha encontrado el usuario en la base de datos', false);
+            if(tValue === elements[key].nick){
+                log(true, '', 'Invocador' + ' ' + "'" + tValue + "'" + ' ' + 'encontrado en la base de datos', false);
                 location.href = '#b' + elements[key].id;
                 quitarLB();
                 user.seleccionarUsuario(elements[key].id, false, true);
@@ -117,7 +104,7 @@ function buscarUsuario(){
             return;
             }
             else {
-                log(true, '', 'No se ha encontrado el usuario en la base de datos', true);
+                log(true, '', 'Invocador' + ' ' + "'" + tValue + "'" + ' ' + 'no encontrado en la base de datos', true);
             }
         }
     }
@@ -172,7 +159,7 @@ function usuariosDePrueba(){
         console.log(request.error.name + '\n\n' + request.error.message);
     };
     data.oncomplete = function(e){
-        log(true, '', 'Usuario de prueba número' + ' ' + udpVar + ' ' + ' agregado correctamente', false);
+        log(true, '', 'Invocador de prueba número' + ' ' + udpVar + ' ' + ' agregado correctamente', false);
         udpVar = udpVar + 1;
         loadAll(true);
     };
@@ -243,19 +230,31 @@ var LMO = {
             case 01: {
                 /* None */
                 $('#lb_content_buscar').css({'display': 'none'});
+                $('#lb_content_info').css({'display': 'none'});
                 /* Block */
                 $('#lb_content_agregar').css({'display': 'block'});
                 /* Texto del LB Title */
-                document.getElementById('lb_title').innerHTML = 'INGRESAR UN USUARIO A LA BASE DE DATOS';
+                document.getElementById('lb_title').innerHTML = 'INGRESAR UN INVOCADOR A LA BASE DE DATOS';
                 break;
             }
             case 02: {
                 /* None */
                 $('#lb_content_agregar').css({'display': 'none'});
+                $('#lb_content_info').css({'display': 'none'});
                 /* Block */
                 $('#lb_content_buscar').css({'display': 'block'});
                 /* Texto del LB Title */
-                document.getElementById('lb_title').innerHTML = 'BUSCAR UN USUARIO EN LA BASE DE DATOS';
+                document.getElementById('lb_title').innerHTML = 'BUSCAR UN INVOCADOR EN LA BASE DE DATOS';
+                break;
+            }
+            case 03: {
+                /* None */
+                $('#lb_content_agregar').css({'display': 'none'});
+                $('#lb_content_buscar').css({'display': 'none'});
+                /* Block */
+                $('#lb_content_info').css({'display': 'block'});
+                /* Texto del LB Title */
+                document.getElementById('lb_title').innerHTML = 'INFORMACIÓN DE INVOCADOR';
                 break;
             }
         }
@@ -318,7 +317,7 @@ var LMO = {
         this.reasonElementSelectedId = '';
         this.lastReasonElementSelectedId = '';
     },
-    defaultUserTitle: 'SELECCIONA UN USUARIO',
+    defaultUserTitle: 'SELECCIONA UN INVOCADOR',
     userTitle: ''
 };
 
@@ -352,6 +351,16 @@ $('#ml_03').click(function(){
 
 /* ML_04 */
 
+$('#ml_04').click(function(){
+    LMO.lb_open(03);
+    $('#lb_container').css({'margin-top': -$('#lb_container').height() / 2});
+    $('#lb_container').css({'margin-left': -$('#lb_container').width() / 2});
+    fadeLb('in');
+    return;
+});
+
+/* ML_05 */
+
 $('#ml_05').click(function(){
     user.deseleccionarUsuario();
     return;
@@ -376,7 +385,7 @@ function quitarLB(){
 function fadeLb(action){
     if(action === 'in'){
         /* Restablecer el texto de los botones */
-        document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar usuario a la base de datos';
+        document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar invocador a la base de datos';
         /**/
         $('#lb_background').fadeIn();
         $('#lb_container').fadeIn();
@@ -476,7 +485,7 @@ function log(action, hora, text, isError){
 /* onclick en JS para evitar que la pagina envie al top con el href # y agregar return false en onclick del documento */
 
 $('#href_ingresarusuario').click(function(){
-    ingresarUsuario();
+    getUserByName();
 });
 
 $('#href_buscarusuario').click(function(){
@@ -573,10 +582,12 @@ var user = {
             for(var i = 0; i < logelement.length; i++){
                 if($(logelement[i]).hasClass('tUserNick')){
                     if(oncompleteMsg){
-                        log(true, '', 'Usuario seleccionado' + ' ' + '(' + logelement[i].innerHTML + ')', false);
+                        log(true, '', 'Invocador seleccionado' + ' ' + '(' + logelement[i].innerHTML + ')', false);
+                        document.getElementById('lb_summonerName').innerHTML = 'Información detallada sobre el invocador' + ' ' + "'<span id='lb_summonerNameColor'>" + logelement[i].innerHTML + "</span>'"; // LB Info
                     }
                     LMO.userTitle = logelement[i].innerHTML;
                     document.getElementById('ml_userTitle').innerHTML = LMO.userTitle;
+                    $('#ml_userTitle').css('color', mainColor); // Color UT
                     $('#ml_04').children().removeClass('main_nav_link_bloqueado');
                     $('#ml_05').children().removeClass('main_nav_link_bloqueado');
                 }
@@ -585,7 +596,7 @@ var user = {
         }
         else {
             if(onerrorMsg){
-                log(true, '', 'Usuario previamente seleccionado', true);
+                log(true, '', 'Invocador previamente seleccionado', true);
             }
         }
         return false;
@@ -598,7 +609,8 @@ var user = {
         $('#ml_04').children().addClass('main_nav_link_bloqueado');
         $('#ml_05').children().addClass('main_nav_link_bloqueado');
         document.getElementById('ml_userTitle').innerHTML = LMO.defaultUserTitle;
-        log(true, '', 'Usuario deseleccionado', false);
+        $('#ml_userTitle').animate({color: '#adafb2'}, 250); // Color UT
+        log(true, '', 'Invocador deseleccionado', false);
         this.userSelectedId = '';
         this.ultimoUsuarioSeleccionado = -1;
     }
@@ -608,11 +620,16 @@ var user = {
 
 var RiotApiConf = {
     REGION: 'na',
-    API_KEY: '93ad4cc0-b04d-4dee-b2c2-a1fe49d63d85',
-    STATUS: false
+    API_KEY: '93ad4cc0-b04d-4dee-b2c2-a1fe49d63d85'
 };
 
-function RIOT(SummonerName){
+function getUserByName(){
+    var SummonerName = document.querySelector('#lb_content_agregar_input').value;
+    if(SummonerName === undefined || SummonerName === ''){
+        log(true, '', 'Escribe el nombre del invocador que quieres ingresar', true);
+        return false;
+    }
+    log(true, '', 'Buscando invocador...', false);
     $.ajax({
         url: 'https://na.api.pvp.net/api/lol/' + RiotApiConf.REGION + '/v1.4/summoner/by-name/' + SummonerName + '?api_key=' + RiotApiConf.API_KEY,
         type: 'GET',
@@ -622,11 +639,11 @@ function RIOT(SummonerName){
             var SUMMONER_NAME_NOSPACES = SummonerName.replace(" ", "");
             SUMMONER_NAME_NOSPACES = SUMMONER_NAME_NOSPACES.toLowerCase().trim();
             console.log('Riot: true');
-            return RiotApiConf.STATUS = true;
+            ingresarUsuario(json[SUMMONER_NAME_NOSPACES].name);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown){
             console.log('Riot: false');
-            return RiotApiConf.STATUS = false;
+            log(true, '', 'Invocador' + ' ' + "'" + SummonerName + "'" + ' ' + 'no encontrado', true);
         }
     });
 }

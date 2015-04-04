@@ -15,22 +15,22 @@
         </header>
         <nav id='main_nav'>
             <div class='main_nav_section'>BASE DE DATOS</div>
-            <a id='ml_01' href='#' onclick="return false;"><div class='main_nav_link'>DEV: Cargar 50 usuarios de prueba</div></a>
-            <a id='ml_02' href='#' onclick="return false;"><div class='main_nav_link'>Agregar un usuario a la base de datos</div></a>
-            <a id='ml_03' href='#' onclick="return false;"><div class='main_nav_link'>Buscar un usuario en la base de datos</div></a>
+            <!--<a id='ml_01' href='#' onclick="return false;"><div class='main_nav_link'>DEV: Cargar 50 usuarios de prueba</div></a>-->
+            <a id='ml_02' href='#' onclick="return false;"><div class='main_nav_link'>Agregar un invocador a la base de datos</div></a>
+            <a id='ml_03' href='#' onclick="return false;"><div class='main_nav_link'>Buscar un invocador en la base de datos</div></a>
             <!---->
             <div id='ml_userTitle' class='main_nav_section'>Null</div>
-            <a id='ml_04' href='#' onclick="return false;"><div class='main_nav_link main_nav_link_bloqueado'>Ver más información sobre este usuario</div></a>
-            <a id='ml_05' href='#' onclick="return false;"><div class='main_nav_link main_nav_link_bloqueado'>Deseleccionar usuario</div></a>
+            <a id='ml_04' href='#' onclick="return false;"><div class='main_nav_link main_nav_link_bloqueado'>Ver más información sobre este invocador</div></a>
+            <a id='ml_05' href='#' onclick="return false;"><div class='main_nav_link main_nav_link_bloqueado'>Deseleccionar invocador</div></a>
         </nav>
         <div id='contenedor'>
             <!---->
             <div class='dtable'>
-                <div class='dcaption'>Usuarios registrados en la base de datos</div>
+                <div class='dcaption'>Invocadores registrados en la base de datos</div>
                 <div class='dthead'>
                     <div class='dtr'>
                         <div style='width: 7.5% !important;' class='dth'>#</div>
-                        <div style='width: 22.5% !important;' class='dth'>Apodo</div>
+                        <div style='width: 22.5% !important;' class='dth'>Nombre de invocador</div>
                         <div style='width: 50%; !important' class='dth'>Razón de ingreso a la base de datos</div>
                         <div style='width: 18.5% !important;' class='dth'>Fecha de ingreso</div>
                     </div>
@@ -54,7 +54,7 @@
                 <div class='lb_title_border'></div>
                 <!-- Ingresar -->
                 <div id='lb_content_agregar' class='lb_content_class'>
-                    <div class='lb_text'>Apodo</div>
+                    <div class='lb_text'>Nombre de invocador</div>
                     <input id='lb_content_agregar_input' class='lb_input' type='text' placeholder=''>
                     <div class='lb_text'>Razón de ingreso</div>
                     <div id='lb_content_agregar_razon' class='lb_razon'>
@@ -83,13 +83,18 @@
                             <div class='lb_razon_option lb_razon_option_black'></div>
                         </div>
                     </div>
-                    <a id='href_ingresarusuario' href='#' onclick='return false;'><div id='lb_content_agregar_button' class='lb_button'>Ingresar usuario a la base de datos</div></a>
+                    <a id='href_ingresarusuario' href='#' onclick='return false;'><div id='lb_content_agregar_button' class='lb_button'>Ingresar invocador a la base de datos</div></a>
                 </div>
                 <!-- Buscar -->
                 <div id='lb_content_buscar' class='lb_content_class'>
-                    <div class='lb_text'>Apodo</div>
+                    <div class='lb_text'>Nombre de invocador</div>
                     <input id='lb_content_buscar_input' class='lb_input' type='text' placeholder=''>
-                    <a id='href_buscarusuario' href='#' onclick='return false;'><div id='lb_content_buscar_button' class='lb_button'>Buscar usuario en la base de datos</div></a>
+                    <a id='href_buscarusuario' href='#' onclick='return false;'><div id='lb_content_buscar_button' class='lb_button'>Buscar invocador en la base de datos</div></a>
+                </div>
+                <!-- Informacion de invocador -->
+                <div id='lb_content_info' class='lb_content_class'>
+                    <div id='lb_summonerName' class='lb_text'></div>
+                    <a id='href_infousuario' href='#' onclick='return false;'><div id='lb_content_info_button' class='lb_button'>Actualizar información</div></a>
                 </div>
                 <!---->
             </div>
