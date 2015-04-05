@@ -1,5 +1,14 @@
+/*
+    Gradient:
+    Oscuro: 18, 19, 20 RGB
+    Claro: 28, 19, 35 RGB
+    Border: #23242A HEXADECIMAL
+    Fondo A: #0D0E0F HEXADECIMAL - 13, 14, 15 RGB
+    Fondo B: #0A0B0C HEXADECIMAL - 10, 11, 12 RGB
+*/
+
 * {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
 }
 
@@ -9,7 +18,7 @@ html{
 
 body {
     min-height: 100%;
-    background-color: #101112;
+    background-color: #0D0E0F;
     min-width: 1280px;
 }
 
@@ -21,26 +30,26 @@ a {
     position: fixed;
     width: 100%;
     height: 30px;
-    border-bottom: 1px solid #222326;
     background-color: #121314;
     z-index: 103;
     text-align: center;
     min-width: 1280px; /* Width minimo */
     /* Gradient */
+    border-bottom: 1px solid #23242A; /* Border */
     background: rgb(18,19,20);
-    background: -moz-linear-gradient(top,  rgba(18,19,20,1) 0%, rgba(26,27,32,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(18,19,20,1)), color-stop(100%,rgba(26,27,32,1)));
-    background: -webkit-linear-gradient(top,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    background: -o-linear-gradient(top,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    background: -ms-linear-gradient(top,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    background: linear-gradient(to bottom,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#121314', endColorstr='#1a1b20',GradientType=0 );
+    background: -moz-linear-gradient(top,  rgba(18,19,20,1) 0%, rgba(28,29,35,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(18,19,20,1)), color-stop(100%,rgba(28,29,35,1)));
+    background: -webkit-linear-gradient(top,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    background: -o-linear-gradient(top,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    background: linear-gradient(to bottom,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#121314', endColorstr='#1c1d23',GradientType=0 );
 }
 
 #main_header_title {
     color: #adafb2;
     line-height: 31px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
 }
@@ -49,19 +58,19 @@ a {
     position: fixed;
     width: auto;
     height: 100%;
-    background-color: #121314;
+    background-color: #0D0E0F;
     z-index: 99;
     padding-top: 31px;
     /* Gradient */
-    border-right: 1px solid #222326;
+    border-right: 1px solid #23242A; /* Border */
     background: rgb(18,19,20);
-    background: -moz-linear-gradient(left,  rgba(18,19,20,1) 0%, rgba(26,27,32,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(18,19,20,1)), color-stop(100%,rgba(26,27,32,1)));
-    background: -webkit-linear-gradient(left,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    background: -o-linear-gradient(left,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    background: -ms-linear-gradient(left,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    background: linear-gradient(to right,  rgba(18,19,20,1) 0%,rgba(26,27,32,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#121314', endColorstr='#1a1b20',GradientType=1 );
+    background: -moz-linear-gradient(left,  rgba(18,19,20,1) 0%, rgba(28,29,35,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(18,19,20,1)), color-stop(100%,rgba(28,29,35,1)));
+    background: -webkit-linear-gradient(left,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    background: -o-linear-gradient(left,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    background: linear-gradient(to right,  rgba(18,19,20,1) 0%,rgba(28,29,35,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#121314', endColorstr='#1c1d23',GradientType=1 );
 }
 
 .main_nav_section {
@@ -71,9 +80,10 @@ a {
     margin-left: 10px;
     margin-right: 10px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
+    /**/
 }
 
 .main_nav_link {
@@ -83,7 +93,7 @@ a {
     margin-left: 20px;
     margin-right: 10px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
 }
@@ -118,7 +128,7 @@ a {
 .dcaption {
     height: 30px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;
@@ -126,17 +136,17 @@ a {
 }
 
 .dtr {
-    border-top: 1px solid #222326;
     margin-bottom: 10px;
     /* Gradient */
-    background: rgb(26,27,32) !important;
-    background: -moz-linear-gradient(top,  rgba(26,27,32,1) 0%, rgba(18,19,20,1) 100%) !important;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(26,27,32,1)), color-stop(100%,rgba(18,19,20,1))) !important;
-    background: -webkit-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%) !important;
-    background: -o-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%) !important;
-    background: -ms-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%) !important;
-    background: linear-gradient(to bottom,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%) !important;
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a1b20', endColorstr='#121314',GradientType=0 ) !important;
+    border-top: 1px solid #23242A; /* Border */
+    background: rgb(28,29,35);
+    background: -moz-linear-gradient(top,  rgba(28,29,35,1) 0%, rgba(18,19,20,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(28,29,35,1)), color-stop(100%,rgba(18,19,20,1)));
+    background: -webkit-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -o-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: linear-gradient(to bottom,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1c1d23', endColorstr='#121314',GradientType=0 );
 }
 
 .dtrlink {
@@ -160,7 +170,7 @@ a {
     line-height: 30px;
     text-align: left;
     padding-left: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;
@@ -173,7 +183,7 @@ a {
     line-height: 30px;
     text-align: left;
     padding-left: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;
@@ -190,7 +200,7 @@ a {
     margin-right: auto;
     height: 30px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;
@@ -202,7 +212,7 @@ a {
     height: 30px;
     margin: 0 auto;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
 }
@@ -247,16 +257,16 @@ a {
     -webkit-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.5);
-    /**/
-    border-top: 1px solid #222326;
-    background: rgb(26,27,32);
-    background: -moz-linear-gradient(top,  rgba(26,27,32,1) 0%, rgba(18,19,20,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(26,27,32,1)), color-stop(100%,rgba(18,19,20,1)));
-    background: -webkit-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: -o-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: -ms-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: linear-gradient(to bottom,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a1b20', endColorstr='#121314',GradientType=0 );
+    /* Gradient */
+    border-top: 1px solid #23242A; /* Border */
+    background: rgb(28,29,35);
+    background: -moz-linear-gradient(top,  rgba(28,29,35,1) 0%, rgba(18,19,20,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(28,29,35,1)), color-stop(100%,rgba(18,19,20,1)));
+    background: -webkit-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -o-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: linear-gradient(to bottom,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1c1d23', endColorstr='#121314',GradientType=0 );
 }
 
 #lb_title {
@@ -264,19 +274,19 @@ a {
     margin-right: auto;
     height: 30px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;
-    /**/
-    background: rgb(26,27,32);
-    background: -moz-linear-gradient(top,  rgba(26,27,32,1) 0%, rgba(18,19,20,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(26,27,32,1)), color-stop(100%,rgba(18,19,20,1)));
-    background: -webkit-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: -o-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: -ms-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: linear-gradient(to bottom,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a1b20', endColorstr='#121314',GradientType=0 );
+    /* Gradient */
+    background: rgb(28,29,35);
+    background: -moz-linear-gradient(top,  rgba(28,29,35,1) 0%, rgba(18,19,20,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(28,29,35,1)), color-stop(100%,rgba(18,19,20,1)));
+    background: -webkit-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -o-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: linear-gradient(to bottom,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1c1d23', endColorstr='#121314',GradientType=0 );
 }
 
 #lb_content {
@@ -296,7 +306,7 @@ a {
     height: 28px;
     width: 290px;
     line-height: 30px;
-    background-color: #101112;
+    background-color: #0D0E0F;
     color: #adafb2;
     border: none;
     padding-left: 10px;
@@ -317,15 +327,15 @@ a {
     height: 30px;
     line-height: 30px;
     padding-left: 10px;
-    background-color: #101112;
+    background-color: #0D0E0F;
     color: #adafb2;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
 }
 
 .lb_razon_option_black {
-    background-color: #0D0E0F !important;
+    background-color: #0A0B0C !important;
 }
 
 .lb_razon_option_status {
@@ -372,15 +382,15 @@ a {
     min-width: 1280px;
     text-align: center;
     /* Gradient */
-    border-top: 1px solid #222326;
-    background: rgb(26,27,32);
-    background: -moz-linear-gradient(top,  rgba(26,27,32,1) 0%, rgba(18,19,20,1) 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(26,27,32,1)), color-stop(100%,rgba(18,19,20,1)));
-    background: -webkit-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: -o-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: -ms-linear-gradient(top,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    background: linear-gradient(to bottom,  rgba(26,27,32,1) 0%,rgba(18,19,20,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a1b20', endColorstr='#121314',GradientType=0 );
+    border-top: 1px solid #23242A; /* Border */
+    background: rgb(28,29,35);
+    background: -moz-linear-gradient(top,  rgba(28,29,35,1) 0%, rgba(18,19,20,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(28,29,35,1)), color-stop(100%,rgba(18,19,20,1)));
+    background: -webkit-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -o-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: -ms-linear-gradient(top,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    background: linear-gradient(to bottom,  rgba(28,29,35,1) 0%,rgba(18,19,20,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1c1d23', endColorstr='#121314',GradientType=0 );
 }
 
 #log_item_01 {
@@ -395,7 +405,7 @@ a {
     width: auto;
     height: 30px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;
@@ -418,9 +428,9 @@ a {
     line-height: 20px;
     margin-top: 5px;
     padding-left: 10px;
-    background-color: #101112;
+    background-color: #0D0E0F;
     color: #adafb2;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     border-radius: 2.5px;
@@ -430,7 +440,7 @@ a {
     width: auto;
     height: 30px;
     line-height: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 10px;
     text-shadow: 1px 1px black;
     color: #adafb2;

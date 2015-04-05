@@ -75,6 +75,28 @@ function ingresarUsuario(apodo){
     };
 }
 
+function modificarUsuario(Obj){
+    /**/
+    var active = dataBase.result;
+    var data = active.transaction(['players'], 'readwrite');
+    var object = data.objectStore('players');
+    var request = object.put({
+        nivel: Obj.level,
+        reason: LMO.reason,
+        fecha: obtenerFechaActual('fechayhora')
+    });
+    request.onerror = function(e){
+        console.log(request.error.name + '\n\n' + request.error.message);
+    };
+    data.oncomplete = function(e){
+        log(true, '', 'El invocador' + ' ' + "'" + apodo + "'" + ' ' + 'ha sido agregado correctamente a la base de datos', false);
+        document.querySelector('#lb_content_agregar_input').value = '';
+        quitarLB();
+        document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro invocador a la base de datos';
+        loadAll(true);
+    };
+}
+
 /* Buscar usuario */
 function buscarUsuario(){
     var tValue = document.querySelector('#lb_content_buscar_input').value;
