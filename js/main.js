@@ -17,7 +17,7 @@ $(document).ready(function(){
 /* Cargar la base de datos */
 
 function startDB(){
-    dataBase = indexedDB.open('newehdbtest47', 1);
+    dataBase = indexedDB.open('newehdbtest48', 1);
     dataBase.onupgradeneeded = function(e){
         var active = dataBase.result;
         var object = active.createObjectStore('players', {keyPath: 'id', autoIncrement: true});
@@ -34,7 +34,10 @@ function startDB(){
 
 /* Ingresar usuario */
 
-function ingresarUsuario(apodo){
+function ingresarUsuario(apodo, uInfoObj, lInfoObj){
+    console.log(apodo);
+    console.log(uInfoObj);
+    console.log(lInfoObj);
     /* Verificar que el usuario no este en la base de datos */
     var children = $('.dtr').children();
     for(var i = 0; i < children.length; i++){
@@ -59,31 +62,25 @@ function ingresarUsuario(apodo){
     var data = active.transaction(['players'], 'readwrite');
     var object = data.objectStore('players');
     var request = object.put({
-        nick: apodo,
+        nick: uInfoObj[apodo].name,
         reason: LMO.reason,
-        fecha: obtenerFechaActual('fechayhora')
-    });
-    request.onerror = function(e){
-        console.log(request.error.name + '\n\n' + request.error.message);
-    };
-    data.oncomplete = function(e){
-        log(true, '', 'El invocador' + ' ' + "'" + apodo + "'" + ' ' + 'ha sido agregado correctamente a la base de datos', false);
-        document.querySelector('#lb_content_agregar_input').value = '';
-        quitarLB();
-        document.getElementById('lb_content_agregar_button').innerHTML = 'Ingresar otro invocador a la base de datos';
-        loadAll(true);
-    };
-}
-
-function modificarUsuario(Obj){
-    /**/
-    var active = dataBase.result;
-    var data = active.transaction(['players'], 'readwrite');
-    var object = data.objectStore('players');
-    var request = object.put({
-        nivel: Obj.level,
-        reason: LMO.reason,
-        fecha: obtenerFechaActual('fechayhora')
+        fecha: obtenerFechaActual('fechayhora'),
+        userInfo: {
+            id: uInfoObj[apodo].id,
+            name: uInfoObj[apodo].name,
+            profileIconId: uInfoObj[apodo].profileIconId,
+            revisionDate: uInfoObj[apodo].revisionDate,
+            summonerLevel: uInfoObj[apodo].summonerLevel
+        },
+        LeagueInfo: {
+            tier: lInfoObj[uInfoObj[apodo].id][0].tier,
+            division: lInfoObj[uInfoObj[apodo].id][0]['entries'][0].division,
+            name: lInfoObj[uInfoObj[apodo].id][0].name,
+            wins: lInfoObj[uInfoObj[apodo].id][0]['entries'][0].wins,
+            losses: lInfoObj[uInfoObj[apodo].id][0]['entries'][0].losses,
+            leaguePoints: lInfoObj[uInfoObj[apodo].id][0]['entries'][0].leaguePoints,
+            isInactive: lInfoObj[uInfoObj[apodo].id][0]['entries'][0].isInactive
+        }
     });
     request.onerror = function(e){
         console.log(request.error.name + '\n\n' + request.error.message);
@@ -117,6 +114,7 @@ function buscarUsuario(){
     };
     data.oncomplete = function(){
         for(var key in elements){
+            console.log(elements[key]);
             if(tValue === elements[key].nick){
                 log(true, '', 'Invocador' + ' ' + "'" + tValue + "'" + ' ' + 'encontrado en la base de datos', false);
                 location.href = '#b' + elements[key].id;
@@ -150,7 +148,7 @@ function loadAll(scroll){
     data.oncomplete = function(){
         var outerHTML = '';
         for(var key in elements){
-            outerHTML += '\n\<div class="dtrlink" onclick="user.seleccionarUsuario(' + elements[key].id + ', true, false)"><div class="dtr userConHover" id="userN' + elements[key].id + '">\n\<div style="width: 7.5% !important;" class="dtd" href="#b' + elements[key].id + '">' + elements[key].id + '</div>\n\<div style="width: 22.5% !important;" class="dtd tUserNick">' + elements[key].nick + '</div>\n\<div style="width: 50%; !important" class="dtd">' + elements[key].reason + '</div>\n\<div style="width: 18.5%; !important" class="dtd">' + elements[key].fecha + '</div>\n\</div></div>';
+            outerHTML += '\n\<div class="dtrlink" onclick="user.seleccionarUsuario(' + elements[key].id + ', true, false)"><div class="dtr userConHover" id="userN' + elements[key].id + '">\n\<div style="width: 7.5% !important;" class="dtd tUserId" href="#b' + elements[key].id + '">' + elements[key].id + '</div>\n\<div style="width: 22.5% !important;" class="dtd tUserNick">' + elements[key].nick + '</div>\n\<div style="width: 50%; !important" class="dtd">' + elements[key].reason + '</div>\n\<div style="width: 18.5%; !important" class="dtd">' + elements[key].fecha + '</div>\n\</div></div>';
         }
         elements = [];
         document.querySelector('#elementsList').innerHTML = outerHTML;
@@ -378,6 +376,7 @@ $('#ml_04').click(function(){
     $('#lb_container').css({'margin-top': -$('#lb_container').height() / 2});
     $('#lb_container').css({'margin-left': -$('#lb_container').width() / 2});
     fadeLb('in');
+    cargarInformacionDeUsuario(user.userSelectedSummonerName);
     return;
 });
 
@@ -514,6 +513,10 @@ $('#href_buscarusuario').click(function(){
     buscarUsuario();
 });
 
+$('#href_infousuario').click(function(){
+    actualizarInformacionDeUsuario(1, user.userSelectedDBId, null, null);
+});
+
 $('#lb_razon_a_01').click(function(){
     LMO.reasonSelect(1);
 });
@@ -585,6 +588,9 @@ $('#log_item_bajar').click(function(){
 /*** Usuarios ***/
 
 var user = {
+    userSelectedDBId: -1,
+    userSelectedSummonerName: 'Null',
+    userSelectedSummonerNameNoSpaces: 'Null',
     userSelectedId: '',
     ultimoUsuarioSeleccionado: -1,
     seleccionarUsuario: function(iId, oncompleteMsg, onerrorMsg){
@@ -602,11 +608,20 @@ var user = {
             document.getElementById(this.userSelectedId).classList.remove('userConHover');
             document.getElementById(this.userSelectedId).classList.add('userSinHover');
             for(var i = 0; i < logelement.length; i++){
+                if($(logelement[i]).hasClass('tUserId')){
+                    this.userSelectedDBId = parseInt(logelement[i].innerHTML);
+                }
                 if($(logelement[i]).hasClass('tUserNick')){
                     if(oncompleteMsg){
                         log(true, '', 'Invocador seleccionado' + ' ' + '(' + logelement[i].innerHTML + ')', false);
-                        document.getElementById('lb_summonerName').innerHTML = 'Información detallada sobre el invocador' + ' ' + "'<span id='lb_summonerNameColor'>" + logelement[i].innerHTML + "</span>'"; // LB Info
                     }
+                    //
+                    this.userSelectedSummonerName = logelement[i].innerHTML;
+                    var SUMMONER_NAME_NOSPACES = logelement[i].innerHTML.replace(" ", "");
+                    SUMMONER_NAME_NOSPACES = SUMMONER_NAME_NOSPACES.toLowerCase().trim();
+                    this.userSelectedSummonerNameNoSpaces = SUMMONER_NAME_NOSPACES;
+                    document.getElementById('lb_summonerName').innerHTML = 'Información detallada sobre el invocador' + ' ' + "'<span id='lb_summonerNameColor'>" + logelement[i].innerHTML + "</span>'"; // LB Info
+                    //
                     LMO.userTitle = logelement[i].innerHTML;
                     document.getElementById('ml_userTitle').innerHTML = LMO.userTitle;
                     $('#ml_userTitle').css('color', mainColor); // Color UT
@@ -635,10 +650,13 @@ var user = {
         log(true, '', 'Invocador deseleccionado', false);
         this.userSelectedId = '';
         this.ultimoUsuarioSeleccionado = -1;
+        this.userSelectedDBId = -1;
+        this.userSelectedSummonerName = 'Null';
+        this.userSelectedSummonerNameNoSpaces = 'Null';
     }
 };
 
-/* TEST RIOT GAMES API */
+/* RIOT GAMES API */
 
 var RiotApiConf = {
     REGION: 'na',
@@ -660,12 +678,152 @@ function getUserByName(){
         success: function (json){
             var SUMMONER_NAME_NOSPACES = SummonerName.replace(" ", "");
             SUMMONER_NAME_NOSPACES = SUMMONER_NAME_NOSPACES.toLowerCase().trim();
-            console.log('Riot: true');
-            ingresarUsuario(json[SUMMONER_NAME_NOSPACES].name);
+            console.log('Riot: true' + ' ' + 'SummonerId:' + ' ' + json[SUMMONER_NAME_NOSPACES].id);
+            getLeagueInfoByUserId(json[SUMMONER_NAME_NOSPACES].id, SUMMONER_NAME_NOSPACES, json);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown){
             console.log('Riot: false');
             log(true, '', 'Invocador' + ' ' + "'" + SummonerName + "'" + ' ' + 'no encontrado', true);
         }
     });
+}
+
+function getLeagueInfoByUserId(id, name, userInfoObj){
+    log(true, '', 'Obteniendo más información sobre el invocador...', false);
+    $.ajax({
+        url: 'https://na.api.pvp.net/api/lol/' + RiotApiConf.REGION + '/v2.5/league/by-summoner/' + id.toString() + '/entry?api_key=' + RiotApiConf.API_KEY,
+        type: 'GET',
+        dataType: 'json',
+        data: {},
+        success: function (json){
+            console.log('RiotLeague: true');
+            console.log(name);
+            ingresarUsuario(name, userInfoObj, json);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown){
+            console.log('RiotLeague: false');
+            log(true, '', 'Invocador' + ' ' + "'" + id + "'" + ' ' + 'no encontrado', true);
+        }
+    });
+}
+
+function cargarInformacionDeUsuario(nombreDeUsuario){
+    var active = dataBase.result;
+    var data = active.transaction(['players'], 'readonly');
+    var object = data.objectStore('players');
+    var elements = [];
+    object.openCursor().onsuccess = function(e){
+        var result = e.target.result;
+        if(result === null){
+            return;
+        }
+        elements.push(result.value);
+        result.continue();
+    };
+    data.oncomplete = function(){
+        for(var key in elements){
+            if(nombreDeUsuario === elements[key].nick){
+                // Codigo
+                document.getElementById('lb_infoName').innerHTML = 'Nombre de invocador:' + ' ' + elements[key].userInfo.name;
+                document.getElementById('lb_infoLevel').innerHTML = 'Nivel de invocador:' + ' ' + elements[key].userInfo.summonerLevel;
+                document.getElementById('lb_infoLeague').innerHTML = 'Liga:' + ' ' + elements[key].LeagueInfo.tier + ' ' + 'division' + ' ' + elements[key].LeagueInfo.division + ',' + ' ' + elements[key].LeagueInfo.name;
+                document.getElementById('lb_infoRankedLP').innerHTML = 'Puntos de liga:' + ' ' + elements[key].LeagueInfo.leaguePoints;
+                document.getElementById('lb_infoRankedWins').innerHTML = 'Partidas clasificatorias ganadas:' + ' ' + elements[key].LeagueInfo.wins;
+                document.getElementById('lb_infoRankedLosses').innerHTML = 'Partidas clasificatorias perdidas:' + ' ' + elements[key].LeagueInfo.losses;
+                if(elements[key].LeagueInfo.isInactive){
+                    document.getElementById('lb_infoInactive').innerHTML = 'Inactivo: Si';
+                }
+                else {
+                    document.getElementById('lb_infoInactive').innerHTML = 'Inactivo: No';
+                }
+            return;
+            }
+        }
+    }
+}
+
+function actualizarInformacionDeUsuario(step, dbUserId, uObject, lObject){
+    if(step === 1){
+        console.log('step 1');
+        obtenerInformacionConLaApi(user.userSelectedSummonerName, 'userInfo', null);
+    }
+    else if(step === 2){
+        console.log(uObject);
+        console.log(lObject);
+        var db = dataBase.result;
+        var objectStore = db.transaction(['players'], "readwrite").objectStore('players');
+        var request = objectStore.get(dbUserId);
+        request.onerror = function(event) {
+            console.log('Error al intentar actualizar la informacion de usuario');
+        };
+        request.onsuccess = function(event) {
+            var data = request.result;
+            // > ACTUALIZAR INFORMACION
+            // -------
+            var uSummonerName = user.userSelectedSummonerNameNoSpaces;
+            var uSummonerId = uObject[user.userSelectedSummonerNameNoSpaces].id.toString();
+            //User
+            data.userInfo.id = uObject[uSummonerName].id;
+            data.userInfo.name = uObject[uSummonerName].name;
+            data.userInfo.profileIconId = uObject[uSummonerName].profileIconId;
+            data.userInfo.revisionDate = uObject[uSummonerName].revisionDate;
+            data.userInfo.summonerLevel = uObject[uSummonerName].summonerLevel;
+            //League
+            data.LeagueInfo.tier = lObject[uSummonerId][0].tier;
+            data.LeagueInfo.division = lObject[uSummonerId][0]['entries'][0].division;
+            data.LeagueInfo.name = lObject[uSummonerId][0].name;
+            data.LeagueInfo.wins = lObject[uSummonerId][0]['entries'][0].wins;
+            data.LeagueInfo.losses = lObject[uSummonerId][0]['entries'][0].losses;
+            data.LeagueInfo.leaguePoints = lObject[uSummonerId][0]['entries'][0].leaguePoints;
+            data.LeagueInfo.isInactive = lObject[uSummonerId][0]['entries'][0].isInactive;
+            // -------
+            // < ACTUALIZAR INFORMACION
+            var requestUpdate = objectStore.put(data);
+            requestUpdate.onerror = function(event) {
+                console.log('Error');
+            };
+            requestUpdate.onsuccess = function(event) {
+                console.log('Exito');
+                cargarInformacionDeUsuario(user.userSelectedSummonerName);
+                log(true, '', 'Invocador actualizado', false);
+            };
+        };
+    }
+}
+
+function obtenerInformacionConLaApi(uNick, tInfo, userInfoObject){
+    if(tInfo === 'userInfo'){
+        log(true, '', 'Obteniendo datos de invocador...', false);
+        $.ajax({
+            url: 'https://na.api.pvp.net/api/lol/' + RiotApiConf.REGION + '/v1.4/summoner/by-name/' + uNick + '?api_key=' + RiotApiConf.API_KEY,
+            type: 'GET',
+            dataType: 'json',
+            data: {},
+            success: function (json){
+                var SUMMONER_NAME_NOSPACES = uNick.replace(" ", "");
+                SUMMONER_NAME_NOSPACES = SUMMONER_NAME_NOSPACES.toLowerCase().trim();
+                console.log('Riot: true' + ' ' + 'SummonerId:' + ' ' + json[SUMMONER_NAME_NOSPACES].id);
+                obtenerInformacionConLaApi(uNick, 'leagueInfo', json);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown){
+                console.log('Riot: problema al obtener informacion con la api, step userInfo');
+            }
+        });
+    }
+    else if(tInfo === 'leagueInfo'){
+        log(true, '', 'Obteniendo datos de liga...', false);
+        $.ajax({
+            url: 'https://na.api.pvp.net/api/lol/' + RiotApiConf.REGION + '/v2.5/league/by-summoner/' + userInfoObject[user.userSelectedSummonerNameNoSpaces].id + '/entry?api_key=' + RiotApiConf.API_KEY,
+            type: 'GET',
+            dataType: 'json',
+            data: {},
+            success: function (json){
+                console.log(userInfoObject[user.userSelectedSummonerNameNoSpaces].id);
+                actualizarInformacionDeUsuario(2, user.userSelectedDBId, userInfoObject, json);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown){
+                console.log('Riot: problema al obtener informacion con la api, step leagueInfo');
+            }
+        });
+    }
 }
